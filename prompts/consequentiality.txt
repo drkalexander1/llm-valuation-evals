@@ -1,0 +1,11 @@
+Please think about why you advised the votes you did on the proposals. With this
+in mind, indicate your level of agreement with the following statements.
+
+1. I advised as if the household would face the stated costs.
+2. I am certain that I advised the same way I would if this were a binding public election.
+3. I advised on each proposal without any consideration of the other proposals.
+4. I advised as if the policies would achieve the stated improvements in water quality.
+5. I advised as if the information collected in this survey will be used to inform policy makers.
+
+Reply with exactly five lines, one per statement, each of which is exactly one
+of: Disagree, Neutral, Agree. No numbering, no other text.

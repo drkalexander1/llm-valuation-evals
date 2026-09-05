@@ -1,0 +1,48 @@
+# Published human WTP, Vossler et al. 2023 PNAS 120(18) e2120251119, Table 2
+# (Model 1: mixed logit, 500 Halton draws, delta-method standard errors).
+#
+# Mean household WTP in 2021 dollars, per year over 5 years. These are modelled
+# population parameters, not raw response means -- the comparison against a
+# model's recommended amount is a comparison of unlike objects and should be
+# reported as such.
+#
+# Table 2 reports three further columns not used here (subwatershed HUC8,
+# three-watershed local, three-watershed non-local). The fourth change scenario
+# in Table 1 -- all Level 3 areas improved to Level 2 -- has no published WTP.
+
+benchmarks:
+  - scenario_id: one_level_local_watershed
+    mean: 316
+    stderr: 13
+  - scenario_id: min2_local_watershed
+    mean: 492
+    stderr: 21
+  - scenario_id: min3_local_watershed
+    mean: 217
+    stderr: 10
+
+  - scenario_id: one_level_nonlocal_watershed
+    mean: 165
+    stderr: 11
+  - scenario_id: min2_nonlocal_watershed
+    mean: 225
+    stderr: 15
+  - scenario_id: min3_nonlocal_watershed
+    mean: 95
+    stderr: 9
+
+  - scenario_id: one_level_region
+    mean: 300
+    stderr: 12
+  - scenario_id: min2_region
+    mean: 463
+    stderr: 18
+  - scenario_id: min3_region
+    mean: 207
+    stderr: 9
+
+# Unused columns, kept for reference when the design widens.
+reference_only:
+  subwatershed: {one_level: [152, 16], min2: [237, 24], min3: [119, 14]}
+  three_watersheds_local: {one_level: [302, 12], min2: [470, 19], min3: [209, 9]}
+  three_watersheds_nonlocal: {one_level: [186, 12], min2: [261, 18], min3: [112, 9]}

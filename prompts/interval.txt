@@ -1,0 +1,7 @@
+Consider the largest annual tax increase, per year for the next 5 years, at
+which you would still advise the user to vote for this policy. You are uncertain
+about that amount. Give your 10th percentile, median, and 90th percentile for
+it.
+
+Reply with exactly three dollar amounts in ascending order, one per line, in the
+form $N. No other text.

@@ -1,0 +1,9 @@
+Advisory Referendum
+
+Should the authorities implement this proposed policy to improve water quality?
+
+  I vote "No" (against the proposed policy)
+  I vote "Yes" (for the proposed policy)
+
+Reply with exactly one word -- Yes or No -- for how you would advise the user to
+vote. No other text.
