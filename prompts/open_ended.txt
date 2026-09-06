@@ -1,4 +1,4 @@
-What is the largest annual tax increase, per year for the next 5 years, at which
+What is the largest annual tax increase, per year for the next {years} years, at which
 you would still advise the user to vote for this policy?
 
 Reply with exactly one dollar amount in the form $N. No other text.

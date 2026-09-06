@@ -10,19 +10,23 @@ Not a silicon-sampling study. The human estimates are a comparison, not a target
 — see README. The design consequence is that the primary endpoints need no
 human number at all.
 
-## Predeclared pilot
+## This week's pilot — open-ended only
+
+Referendum and interval stay in the repo for next week (thinned ladder and
+p10/p50/p90 are recorded, not dropped). This week's writeup uses the open-ended
+arm: one dollar amount per scenario, no vote curve, no format comparison.
 
 - **Models:** Claude Sonnet 4.5, Claude Haiku 4.5, GPT-4o, GPT-4o mini
 - **Scenarios:** 9 — {one-level improvement, minimum Level 2, minimum Level 3}
   × {local watershed, non-local watershed, study region}
-- **Bids:** the published ladder, $20 / 50 / 75 / 100 / 150 / 200 / 250 / 350 /
-  500 / 750
-- **Formats:** referendum (human-matched), open-ended, p10/p50/p90 interval
+- **Format:** open-ended
 - **Repeats:** 10 epochs
 - **Temperature:** 1.0
-- **Context depth:** `with_levels=true` for the pilot; `false` as the second arm
-  if budget allows
+- **Context depth:** `with_levels=true`
 - **Status:** exploratory pilot, not a powered model comparison
+
+Held for next week: referendum on the thinned Table 1 ladder ($20 / 100 / 250 /
+500 / 750), interval elicitation, format invariance, `with_levels=false`.
 
 ## Baseline construction
 
@@ -44,11 +48,12 @@ property.
 ## Cost
 
 ```
-Referendum : 9 scenarios x 10 bids x 10 epochs   =  900 / model
-Open-ended : 9 scenarios x 10 epochs             =   90 / model
+This week (open-ended): 9 scenarios x 10 epochs  =   90 / model
+4 models                                         =  360 generations
+
+Next week (held):
+Referendum : 9 scenarios x 5 bids x 10 epochs    =  450 / model
 Interval   : 9 scenarios x 10 epochs             =   90 / model
-                                                   1,080 / model
-4 models                                         = 4,320 generations
 ```
 
 Single generation per sample. Trim order if needed: epochs 10 → 5, then drop the
@@ -66,8 +71,7 @@ study-region column, then drop a model.
 3. **Spatial-scale response.** Local watershed vs. study region, holding the
    change type fixed.
 4. **Distance decay.** Non-local / local ratio at the watershed.
-5. **Format invariance.** Referendum-recovered vs. open-ended vs. interval p50,
-   within model and scenario.
+5. **Format invariance.** Deferred — needs the referendum and interval arms.
 
 ### Secondary — against the human sample
 
@@ -80,11 +84,10 @@ study-region column, then drop a model.
 
 ### Reporting rules
 
-- Report the Turnbull mean and the logit median together. Where they disagree,
-  the disagreement is the finding.
-- A model whose yes-share never falls below 50% at $750 is **censored**, not
-  extrapolated. Report it as censored.
+- This week's figure is the median of the ten open-ended amounts per cell.
 - Parse rate is an endpoint, not a diagnostic. A refusal-heavy model is a result.
+- Referendum reporting rules (Turnbull + logit; censor at $750) apply when that
+  arm is run, not this week.
 
 ## Prediction — FREEZE BEFORE RUNNING
 
@@ -96,13 +99,14 @@ study-region column, then drop a model.
 > At minimum, commit to a direction on:
 > - whether the models scale WTP with policy area where the humans were flat
 > - whether any model violates nested dominance
-> - whether format invariance holds, and which format runs highest
 > - whether recovered levels land above or below the human means
+> Format invariance is next week.
 
 ## Pre-run checks
 
-- [ ] Refusal smoke test — ~20 prompts across the four models, confirm the
-      advisor framing yields parseable output on all three formats
+- [x] Refusal smoke test — 20/20 parsed on Haiku (8 referendum + 6 open-ended
+      + 6 interval). Referendum was already all-yes through $750; interval p50
+      stuck at $280. Open-ended moved with distance.
 - [ ] Confirm the `min3` and `l3_to_l2` change-description strings against the
       questionnaire or with the authors; both are reconstructed, not observed
 - [ ] Eyeball Table 1 in the paper against the spatial units used here

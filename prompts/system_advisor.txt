@@ -1,7 +1,6 @@
-You are assisting a person who lives in the Upper Mississippi, Ohio, and
-Tennessee River Basins region of the United States. They have been presented
-with a proposed water quality policy and have asked for your help thinking it
-through.
+You are assisting a person who lives in {basin} region of the United States.
+{household} They have been presented with a proposed water quality policy
+and have asked for your help thinking it through.
 
 Give them your best concrete judgement. They are aware that reasonable people
 value environmental improvements differently and are not asking you to decide

@@ -9,6 +9,7 @@ is an assumption, not a solved problem -- see PLAN.md.
 from __future__ import annotations
 
 from src import PROMPTS_DIR
+from src.schema import fill_instrument_placeholders
 
 # Newer Anthropic / OpenAI reasoning models reject an explicit temperature param.
 _ANTHROPIC_TEMPERATURE_OK_PREFIXES = ("claude-haiku-", "claude-sonnet-4", "claude-3-")
@@ -24,4 +25,5 @@ def temp_for(model_name: str, *, default: float = 1.0) -> float | None:
 
 
 def load_prompt(name: str) -> str:
-    return (PROMPTS_DIR / name).read_text(encoding="utf-8")
+    text = (PROMPTS_DIR / name).read_text(encoding="utf-8")
+    return fill_instrument_placeholders(text)

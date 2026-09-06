@@ -6,11 +6,13 @@ import pytest
 
 from src import wtp
 from src.scenarios import render_policy_table, render_scenario_prompt
+from src.inspect_util import load_prompt
 from src.schema import (
     LevelDistribution,
     dominates,
     load_benchmarks,
     load_bids,
+    load_instrument,
     load_scenarios,
     parse_dollars,
     parse_interval,
@@ -38,6 +40,9 @@ def test_bcg_terminology_never_reaches_a_model():
                 ).lower()
                 for token in banned:
                     assert token not in text, f"{scenario.id}/{fmt}: leaked {token!r}"
+    system = load_prompt("system_advisor.txt").lower()
+    for token in banned:
+        assert token not in system, f"system prompt leaked {token!r}"
 
 
 # --------------------------------------------------------------------------- #
@@ -143,8 +148,57 @@ def test_referendum_includes_the_bid():
     assert "Advisory Referendum" in text
 
 
-def test_bids_are_the_published_ladder():
-    assert load_bids() == [20, 50, 75, 100, 150, 200, 250, 350, 500, 750]
+def test_displayed_averages_are_derived():
+    """The table prints computed averages; there is no stored display override."""
+    scenario = SCENARIOS["min2_local_watershed"]
+    derived = scenario.baseline.apply(scenario.change)
+    assert scenario.improved.average == pytest.approx(derived.average)
+    table = render_policy_table(scenario, 100)
+    assert f"{scenario.baseline.average:.2f}" in table
+    assert f"{scenario.improved.average:.2f}" in table
+
+
+def test_change_line_comes_from_instrument():
+    inst = load_instrument()
+    table = render_policy_table(SCENARIOS["min2_local_watershed"], 100)
+    assert inst.changes["min2"].description in table
+
+
+def test_scenario_description_overrides_change_line():
+    base = SCENARIOS["min2_local_watershed"]
+    overridden = base.model_copy(update={"description": "A custom change line"})
+    table = render_policy_table(overridden, 100)
+    assert "A custom change line" in table
+    assert load_instrument().changes["min2"].description not in table
+
+
+def test_prompts_fill_instrument_placeholders():
+    inst = load_instrument()
+    preamble = load_prompt("scenario_preamble.txt")
+    assert str(inst.tax.start) in preamble
+    assert str(inst.tax.end) in preamble
+    assert str(inst.tax.years) in preamble
+    assert "{end}" not in preamble
+    assert inst.basin in load_prompt("system_advisor.txt")
+    assert inst.household.rendered_description() in load_prompt("system_advisor.txt")
+    assert f"next {inst.tax.years} years" in load_prompt("open_ended.txt")
+
+
+def test_household_income_appears_in_the_scenario():
+    inst = load_instrument()
+    assert inst.household.income == 100000
+    assert inst.household.size == 4
+    table = render_policy_table(SCENARIOS["min2_local_watershed"], 100)
+    assert inst.household.rendered_description() in table
+    assert "$100,000" in table
+    assert "4-person" in table
+    assert "earner" not in table.lower()
+
+
+def test_bids_are_the_thinned_ladder():
+    bids = load_bids()
+    assert bids == [20, 100, 250, 500, 750]
+    assert bids[0] == 20 and bids[-1] == 750
 
 
 def test_every_scenario_has_a_benchmark():
@@ -187,7 +241,8 @@ def test_parse_interval():
 # --------------------------------------------------------------------------- #
 def test_turnbull_recovers_a_step_threshold():
     """Deterministic yes-iff-cheap responses should integrate to the threshold."""
-    bids = load_bids()
+    # Fixed dense ladder so this does not track the instrument cost trim.
+    bids = [20, 50, 75, 100, 150, 200, 250, 350, 500, 750]
     votes = [b <= 250 for b in bids]
     est = wtp.estimate(bids, votes)
     assert est.turnbull_mean == pytest.approx(250, abs=60)
@@ -197,7 +252,7 @@ def test_turnbull_recovers_a_step_threshold():
 def test_logit_recovers_a_noisy_threshold():
     bids = []
     votes = []
-    for bid in load_bids():
+    for bid in [20, 50, 75, 100, 150, 200, 250, 350, 500, 750]:
         for i in range(20):
             bids.append(bid)
             # Smooth-ish acceptance curve centred near $250.

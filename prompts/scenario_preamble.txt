@@ -1,4 +1,4 @@
 The water quality changes described below would occur only in the highlighted
 policy region. Improvements would occur gradually, reaching the new conditions
-by about 2026, and then remain at the new levels. The tax increase would last 5
-years, and be in place from 2022 to 2026.
+by about {end}, and then remain at the new levels. The tax increase would last {years}
+years, and be in place from {start} to {end}.

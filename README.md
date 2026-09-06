@@ -14,8 +14,9 @@ Built on [Inspect AI](https://inspect.aisi.org.uk/), alongside
 [`llm-anchoring-evals`](https://github.com/drkalexander1/llm-anchoring-evals)
 and the rest of the weekly evaluation program.
 
-**Status: not yet run.** Design is predeclared in [`PLAN.md`](PLAN.md); the
-prediction must be committed before any generations.
+**Status: this week's pilot is the open-ended arm** (9 scenarios × 10 epochs).
+Referendum and interval are built and held for next week. Design is in
+[`PLAN.md`](PLAN.md); the prediction must be committed before any generations.
 
 ## The question, and what it is not
 
@@ -57,7 +58,7 @@ are constructed so this pair is never degenerate (`test_min2_dominates_min3`,
 Nine scenarios: three policy types (one-level improvement, minimum Level 2,
 minimum Level 3) crossed with three spatial units (local watershed, non-local
 watershed, full study region). Every one has a published human mean and standard
-error from Table 2. Ten bids from the published ladder. Three elicitation
+error from Table 2. Five bids from a thinned Table 1 ladder. Three elicitation
 formats. Four models.
 
 | | local watershed | non-local watershed | study region |
@@ -90,11 +91,13 @@ across every scenario, format, and context setting.
 pip install -r requirements.txt
 cp .env.example .env   # add API keys
 
-inspect eval src/tasks/referendum.py --model anthropic/claude-sonnet-4-5 --epochs 10
-inspect eval src/tasks/direct_wtp.py --model anthropic/claude-sonnet-4-5 --epochs 10 -T fmt=open_ended
-inspect eval src/tasks/direct_wtp.py --model anthropic/claude-sonnet-4-5 --epochs 10 -T fmt=interval
+# This week — open-ended pilot
+python scripts/run_pilot.py
+python scripts/analyze_coherence.py logs/pilot --csv results/coherence.csv
 
-python scripts/analyze_coherence.py logs/ --csv results/coherence.csv
+# Next week — referendum and interval (already wired)
+inspect eval src/tasks/referendum.py --model anthropic/claude-sonnet-4-5 --epochs 10
+inspect eval src/tasks/direct_wtp.py --model anthropic/claude-sonnet-4-5 --epochs 10 -T fmt=interval
 ```
 
 Context depth is a task parameter, not a fixed choice: `-T with_levels=false`
@@ -105,13 +108,14 @@ reproduces their condition and running both is the honest version.
 Reasoning models that reject an explicit temperature need `-T temperature=null`.
 
 ```bash
-pytest -q      # 28 tests, no API key needed
+pytest -q      # no API key needed
 ```
 
 ## Layout
 
 ```
-data/scenarios.yaml         nine scenarios, baseline distributions, bid ladder
+data/instrument.yaml        levels, change rules, region copy, bids, baseline
+data/scenarios.yaml         nine-cell experimental grid
 data/human_benchmarks.yaml  Table 2 estimates with standard errors
 prompts/                    verbatim instrument text
 src/schema.py               level arithmetic, dominance, response parsing

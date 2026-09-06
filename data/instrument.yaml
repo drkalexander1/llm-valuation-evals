@@ -1,0 +1,86 @@
+# Expert-facing instrument. Edit this file to retune wording, the level
+# scale, change rules, region copy, household income, the tax window, the
+# bid ladder, or the default baseline. Displayed averages are not set here:
+# they are computed from baseline shares plus each change's apply map.
+#
+# The six quality levels are the survey's own labels. The underlying
+# construct is the EPA Biological Condition Gradient, but the instrument
+# withheld that terminology from respondents (SI S2) and so do we.
+
+basin: the Upper Mississippi, Ohio, and Tennessee River Basins
+
+levels:
+  1: "Level 1 - Natural State"
+  2: "Level 2 - Close to Natural State"
+  3: "Level 3 - Some Changes Noticeable"
+  4: "Level 4 - Many Changes Noticeable"
+  5: "Level 5 - Major Degradation"
+  6: "Level 6 - Extreme Degradation"
+
+# apply maps every declared level to the level it becomes. Lower is better.
+# Dominance is: for every level in the baseline, apply[a][L] <= apply[b][L].
+changes:
+  # Observed on a voting screen (sd01 p.42).
+  one_level:
+    description: All areas within region improve by one level
+    apply: {1: 1, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5}
+
+  # Observed in Figure S3 for a baseline whose only sub-Level-2 areas were at
+  # Level 3. Generalized here; confirm against a min-2 screen with a mixed
+  # baseline before treating as verbatim.
+  min2:
+    description: All areas currently below Level 2 improved to Level 2
+    apply: {1: 1, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2}
+
+  # RECONSTRUCTED -- not observed on any screen. Confirm with the authors.
+  min3:
+    description: All areas currently below Level 3 improved to Level 3
+    apply: {1: 1, 2: 2, 3: 3, 4: 3, 5: 3, 6: 3}
+
+  # RECONSTRUCTED -- Table 1 lists this scenario but Table 2 reports no WTP
+  # for it, so it has no benchmark and is not in the default cell set.
+  l3_to_l2:
+    description: All Level 3 areas improved to Level 2
+    apply: {1: 1, 2: 2, 3: 2, 4: 4, 5: 5, 6: 6}
+
+regions:
+  local:
+    description: Your local watershed.
+    includes_home: true
+  nonlocal:
+    description: A non-local watershed, which does not include your home.
+    includes_home: false
+  region:
+    description: >-
+      The full study region: the Upper Mississippi, Ohio, and Tennessee
+      River Basins.
+    includes_home: true
+
+household:
+  income: 100000
+  size: 4
+  description: "This is a {size}-person household with an annual income of {income}."
+
+tax:
+  years: 5
+  start: 2022
+  end: 2026
+
+# Table 1 published ladder (each human saw one, randomly assigned):
+# [20, 50, 75, 100, 150, 200, 250, 350, 500, 750]
+# Thinned here: same endpoints, fewer interior points. The model has to vote
+# at every rung; a person did not.
+bids: [20, 100, 250, 500, 750]
+
+# Study-region distribution from Vossler et al. 2023 SI Figure S2. The real
+# survey drew a respondent-specific baseline from their own watershed; holding
+# it fixed here isolates policy area size and whether the area includes the
+# respondent's home. Figure S2 shares sum to 99.49, not 100 (published
+# rounding). The schema normalizes, which puts the baseline average at 3.54
+# against the published 3.52.
+baseline:
+  shares:
+    2: 4.36
+    3: 41.63
+    4: 48.97
+    5: 4.53

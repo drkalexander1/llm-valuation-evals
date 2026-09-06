@@ -1,4 +1,4 @@
-Consider the largest annual tax increase, per year for the next 5 years, at
+Consider the largest annual tax increase, per year for the next {years} years, at
 which you would still advise the user to vote for this policy. You are uncertain
 about that amount. Give your 10th percentile, median, and 90th percentile for
 it.

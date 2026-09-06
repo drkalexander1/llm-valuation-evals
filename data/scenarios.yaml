@@ -1,27 +1,11 @@
-# Valuation scenarios for the referendum arm.
+# Experimental grid. Instrument wording, change rules, the default baseline,
+# and the bid ladder live in instrument.yaml -- edit that file to retune
+# what a model sees. Averages stay derived from the baseline plus the change
+# apply map.
 #
-# Baseline level distribution is held FIXED across spatial units, using the
-# study-region distribution from Vossler et al. 2023 SI Figure S2. The real
-# survey drew a respondent-specific baseline from their own watershed; holding
-# it fixed here isolates the two things Table 2's columns actually vary --
-# policy area size and whether the area includes the respondent's home -- at the
-# cost of departing from the specific numbers any one respondent saw. Recorded
-# as a deviation in PLAN.md.
-#
-# Figure S2 shares sum to 99.49, not 100 (published rounding). The schema
-# normalizes, which puts the baseline average at 3.54 against the published 3.52.
-#
-# Area: a watershed of 17,000 sq mi is stated in the instrument as 4% of the
-# study area, giving ~425,000 sq mi for the full region.
-
-bids: [20, 50, 75, 100, 150, 200, 250, 350, 500, 750]
-
-_baseline: &study_region_baseline
-  shares:
-    2: 4.36
-    3: 41.63
-    4: 48.97
-    5: 4.53
+# Optional per-scenario keys (unused in the default grid):
+#   baseline     override the instrument default shares
+#   description  override the change-line wording for this cell only
 
 scenarios:
   # --- local watershed (HUC4) -------------------------------------------- #
@@ -30,7 +14,6 @@ scenarios:
     locality: local
     spatial_unit: watershed
     area_sq_miles: 17000
-    baseline: *study_region_baseline
     home_level: 4
 
   - id: min2_local_watershed
@@ -38,7 +21,6 @@ scenarios:
     locality: local
     spatial_unit: watershed
     area_sq_miles: 17000
-    baseline: *study_region_baseline
     home_level: 4
 
   - id: min3_local_watershed
@@ -46,7 +28,6 @@ scenarios:
     locality: local
     spatial_unit: watershed
     area_sq_miles: 17000
-    baseline: *study_region_baseline
     home_level: 4
     notes: >-
       Dominated by min2_local_watershed for this baseline. The pair is the
@@ -59,24 +40,18 @@ scenarios:
     locality: nonlocal
     spatial_unit: watershed
     area_sq_miles: 17000
-    baseline: *study_region_baseline
-    home_level: null
 
   - id: min2_nonlocal_watershed
     change: min2
     locality: nonlocal
     spatial_unit: watershed
     area_sq_miles: 17000
-    baseline: *study_region_baseline
-    home_level: null
 
   - id: min3_nonlocal_watershed
     change: min3
     locality: nonlocal
     spatial_unit: watershed
     area_sq_miles: 17000
-    baseline: *study_region_baseline
-    home_level: null
 
   # --- full study region -------------------------------------------------- #
   - id: one_level_region
@@ -84,7 +59,6 @@ scenarios:
     locality: region
     spatial_unit: study_region
     area_sq_miles: 425000
-    baseline: *study_region_baseline
     home_level: 4
 
   - id: min2_region
@@ -92,7 +66,6 @@ scenarios:
     locality: region
     spatial_unit: study_region
     area_sq_miles: 425000
-    baseline: *study_region_baseline
     home_level: 4
 
   - id: min3_region
@@ -100,5 +73,4 @@ scenarios:
     locality: region
     spatial_unit: study_region
     area_sq_miles: 425000
-    baseline: *study_region_baseline
     home_level: 4

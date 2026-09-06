@@ -9,8 +9,11 @@ and whether a model does is answerable without any human number.
 The interval format reuses the p10/p50/p90 elicitation from the anchoring and
 meta-consistency rounds, so widths are comparable to that work.
 
+This week's pilot is open-ended (`python scripts/run_pilot.py`). Interval is
+held for next week.
+
 Run:
-    inspect eval src/tasks/direct_wtp.py --model anthropic/claude-sonnet-4-5
+    inspect eval src/tasks/direct_wtp.py --model anthropic/claude-sonnet-4-5 --epochs 10
     inspect eval src/tasks/direct_wtp.py --model anthropic/claude-haiku-4-5 -T fmt=interval
 """
 

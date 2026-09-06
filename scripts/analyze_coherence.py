@@ -75,6 +75,25 @@ def direct_wtp(rows: list[dict]) -> dict[tuple[str, str, str], float]:
     return out
 
 
+def primary_wtp(
+    model: str,
+    sid: str,
+    ref: dict[tuple[str, str], wtp.WTPEstimate],
+    direct: dict[tuple[str, str, str], float],
+) -> tuple[float | None, str | None]:
+    """Prefer referendum, then open-ended, then interval. This week's pilot is OE."""
+    est = ref.get((model, sid))
+    if est is not None and est.preferred is not None:
+        return est.preferred, "referendum"
+    for fmt in ("open_ended", "interval"):
+        value = direct.get((model, sid, fmt))
+        if value is not None:
+            return value, fmt
+    if est is not None and est.censored:
+        return None, "censored"
+    return None, None
+
+
 def report(rows: list[dict]) -> list[dict]:
     scenarios = {s.id: s for s in load_scenarios()}
     bench = load_benchmarks()
@@ -88,19 +107,27 @@ def report(rows: list[dict]) -> list[dict]:
         print(f"\n=== {model} ===")
 
         # --- criterion: level comparison against published means ------------ #
-        print("\n  scenario                        model    human (SE)   ratio")
+        print("\n  scenario                        model    human (SE)   ratio  source")
         for sid in scenarios:
+            value, source = primary_wtp(model, sid, ref, direct)
             est = ref.get((model, sid))
-            value = est.preferred if est else None
             b = bench[sid]
-            shown = f"{value:8.0f}" if value is not None else "  censored"
-            ratio = f"{value / b.mean:6.2f}" if value is not None else "     -"
-            print(f"  {sid:<30} {shown}  {b.mean:5.0f} ({b.stderr:2.0f}) {ratio}")
+            if value is not None:
+                shown = f"{value:8.0f}"
+                ratio = f"{value / b.mean:6.2f}"
+            elif source == "censored":
+                shown, ratio = "  censored", "     -"
+            else:
+                shown, ratio = "         -", "     -"
+            src = source or "-"
+            print(f"  {sid:<30} {shown}  {b.mean:5.0f} ({b.stderr:2.0f}) {ratio}  {src}")
             out.append(
                 {
                     "model": model,
                     "scenario_id": sid,
-                    "wtp_referendum": value,
+                    "wtp_primary": value,
+                    "primary_source": source,
+                    "wtp_referendum": est.preferred if est else None,
                     "wtp_turnbull": est.turnbull_mean if est else None,
                     "wtp_open_ended": direct.get((model, sid, "open_ended")),
                     "wtp_interval_p50": direct.get((model, sid, "interval")),
@@ -110,18 +137,21 @@ def report(rows: list[dict]) -> list[dict]:
                 }
             )
 
+        def _val(sid: str) -> float | None:
+            return primary_wtp(model, sid, ref, direct)[0]
+
         # --- nested dominance ------------------------------------------------ #
         print("\n  nested dominance (min2 must be >= min3):")
         for key in units:
             unit, locality = key.split("|")
             suffix = _suffix(unit, locality)
-            a, b_ = ref.get((model, f"min2{suffix}")), ref.get((model, f"min3{suffix}"))
-            if a is None or b_ is None or a.preferred is None or b_.preferred is None:
+            a, b_ = _val(f"min2{suffix}"), _val(f"min3{suffix}")
+            if a is None or b_ is None:
                 print(f"    {suffix.lstrip('_'):<24} insufficient data")
                 continue
-            ok = a.preferred >= b_.preferred
+            ok = a >= b_
             print(
-                f"    {suffix.lstrip('_'):<24} {a.preferred:6.0f} vs {b_.preferred:6.0f}"
+                f"    {suffix.lstrip('_'):<24} {a:6.0f} vs {b_:6.0f}"
                 f"  {'ok' if ok else 'VIOLATION'}"
             )
 
@@ -130,10 +160,7 @@ def report(rows: list[dict]) -> list[dict]:
         for key in units:
             unit, locality = key.split("|")
             suffix = _suffix(unit, locality)
-            values = [
-                (ref.get((model, f"{c}{suffix}")).preferred if ref.get((model, f"{c}{suffix}")) else None)
-                for c in CHANGES
-            ]
+            values = [_val(f"{c}{suffix}") for c in CHANGES]
             if any(v is None for v in values):
                 print(f"    {suffix.lstrip('_'):<24} insufficient data")
                 continue
@@ -141,8 +168,29 @@ def report(rows: list[dict]) -> list[dict]:
             rendered = " > ".join(f"{v:.0f}" for v in values)
             print(f"    {suffix.lstrip('_'):<24} {rendered}  {'ok' if ok else 'VIOLATION'}")
 
+        # --- spatial scale --------------------------------------------------- #
+        print("\n  spatial scale (local watershed vs study region):")
+        for change in CHANGES:
+            local, region = _val(f"{change}_local_watershed"), _val(f"{change}_region")
+            if local is None or region is None:
+                print(f"    {change:<24} insufficient data")
+                continue
+            ratio = region / local if local else float("nan")
+            print(f"    {change:<24} {local:6.0f} vs {region:6.0f}  region/local x{ratio:.2f}")
+
+        # --- distance decay -------------------------------------------------- #
+        print("\n  distance decay (nonlocal / local at the watershed):")
+        for change in CHANGES:
+            local, non = _val(f"{change}_local_watershed"), _val(f"{change}_nonlocal_watershed")
+            if local is None or non is None:
+                print(f"    {change:<24} insufficient data")
+                continue
+            ratio = non / local if local else float("nan")
+            print(f"    {change:<24} {non:6.0f} / {local:6.0f}  x{ratio:.2f}")
+
         # --- format invariance ------------------------------------------------ #
         print("\n  format invariance (referendum / open-ended / interval p50):")
+        printed = False
         for sid in scenarios:
             est = ref.get((model, sid))
             trio = [
@@ -150,12 +198,15 @@ def report(rows: list[dict]) -> list[dict]:
                 direct.get((model, sid, "open_ended")),
                 direct.get((model, sid, "interval")),
             ]
-            if all(v is None for v in trio):
-                continue
-            rendered = " / ".join("-" if v is None else f"{v:.0f}" for v in trio)
             known = [v for v in trio if v is not None]
-            spread = (max(known) / min(known)) if len(known) > 1 and min(known) > 0 else float("nan")
+            if len(known) < 2:
+                continue
+            printed = True
+            rendered = " / ".join("-" if v is None else f"{v:.0f}" for v in trio)
+            spread = (max(known) / min(known)) if min(known) > 0 else float("nan")
             print(f"    {sid:<30} {rendered:<24} spread x{spread:.2f}")
+        if not printed:
+            print("    skipped (single format this week)")
 
     return out
 

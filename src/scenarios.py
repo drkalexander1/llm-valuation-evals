@@ -3,25 +3,15 @@
 Layout follows Figure S3 (local variant, four rows) and the non-local voting
 screen at sd01 p.41 (three rows -- the "near your home" row is absent, not
 blank). That structural difference between arms is part of the treatment.
+
+Region copy, level labels, change lines, and the tax window come from
+data/instrument.yaml. Averages on the table are computed, never stored.
 """
 
 from __future__ import annotations
 
 from src.inspect_util import load_prompt
-from src.schema import (
-    CHANGE_DESCRIPTIONS,
-    LEVEL_LABELS,
-    Scenario,
-)
-
-REGION_DESCRIPTIONS: dict[str, str] = {
-    "local": "Your local watershed.",
-    "nonlocal": "A non-local watershed, which does not include your home.",
-    "region": (
-        "The full study region: the Upper Mississippi, Ohio, and Tennessee "
-        "River Basins."
-    ),
-}
+from src.schema import Scenario, load_instrument
 
 _LABEL_W = 42
 _COL_W = 22
@@ -32,24 +22,27 @@ def _row(label: str, current: str, proposed: str) -> str:
 
 
 def render_policy_table(scenario: Scenario, bid: int) -> str:
+    inst = load_instrument()
+    labels = inst.levels
     lines = [
         "Policy Summary",
         "",
-        f"Description of policy region: {REGION_DESCRIPTIONS[scenario.locality]}",
+        f"Description of policy region: {inst.regions[scenario.locality].description}",
         f"Size of policy region: {scenario.area_sq_miles:,} square miles.",
+        inst.household.rendered_description(),
         "",
         _row("", "No policy", "Proposed policy"),
         _row("", "(current conditions)", "(improved conditions)"),
         "-" * _LABEL_W + "+" + "-" * (_COL_W + 2) + "+" + "-" * (_COL_W + 2),
-        _row("Description of change", "None", CHANGE_DESCRIPTIONS[scenario.change]),
+        _row("Description of change", "None", scenario.change_description),
     ]
 
     if scenario.includes_home and scenario.home_level is not None:
         lines.append(
             _row(
                 "Water quality near your home",
-                LEVEL_LABELS[scenario.home_level],
-                LEVEL_LABELS[scenario.home_level_after],
+                labels[scenario.home_level],
+                labels[scenario.home_level_after],
             )
         )
 
@@ -60,18 +53,20 @@ def render_policy_table(scenario: Scenario, bid: int) -> str:
             f"{scenario.improved.average:.2f}",
         ),
         _row("Increase in taxes to your household", "None", f"${bid}"),
-        _row("(per year, for the next 5 years)", "", ""),
+        _row(f"(per year, for the next {inst.tax.years} years)", "", ""),
     ]
     return "\n".join(line.rstrip() for line in lines)
 
 
 def render_levels_block() -> str:
-    """The six quality levels, as introduced in Part 2 of the survey."""
+    """The quality levels, as introduced in Part 2 of the survey."""
+    labels = load_instrument().levels
+    count = {6: "six"}.get(len(labels), str(len(labels)))
     header = (
-        "Surface waterbodies can be divided into six categories based on how a "
+        f"Surface waterbodies can be divided into {count} categories based on how a "
         "stream, river, or lake differs from its natural state:"
     )
-    return header + "\n\n" + "\n".join(LEVEL_LABELS[i] for i in sorted(LEVEL_LABELS))
+    return header + "\n\n" + "\n".join(labels[i] for i in sorted(labels))
 
 
 def render_scenario_prompt(
