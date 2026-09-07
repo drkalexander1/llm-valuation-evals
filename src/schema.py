@@ -290,13 +290,42 @@ _NUMBER_RE = re.compile(r"[+-]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?")
 _YES_RE = re.compile(r"\bvote\s*[\"']?\s*yes|\byes\b", re.IGNORECASE)
 _NO_RE = re.compile(r"\bvote\s*[\"']?\s*no|\bno\b", re.IGNORECASE)
 
+_ANSWER_RE = re.compile(r"^\s*\**\s*ANSWER\s*\**\s*:\s*(.+?)\s*\**\s*$", re.IGNORECASE)
+
+
+def answer_line(text: str) -> str | None:
+    """Content after the last 'ANSWER:' marker, or None if the model omitted it.
+
+    The prompts let a model reason and then require a delimited final line. That
+    is the whole extraction contract: everything before the marker is reasoning
+    and must not be scanned for numbers.
+
+    The 2026-09-06 pilot is why. Sonnet 4.5 reasoned aloud in 87 of 90 samples
+    and restated the stated household income on the way; a parser scanning free
+    text returned $100,000 for all nine of its cells while the parse rate read
+    100%. Suppressing reasoning is not the fix either -- it worked on three
+    models and failed on one, which meant the run compared a reasoning model
+    against three one-shot models. Letting every model reason and delimiting the
+    answer removes both problems at once.
+    """
+    found: str | None = None
+    for line in text.splitlines():
+        match = _ANSWER_RE.match(line.strip())
+        if match:
+            found = match.group(1).strip()
+    return found
+
 
 def parse_vote(text: str) -> bool | None:
     """Parse a referendum vote. None when the model did not commit.
 
-    Checks the final non-empty line first: models often reason first and answer
-    last, and an early 'no' inside the reasoning should not outrank the verdict.
+    Prefers the delimited ANSWER line; falls back to the final non-empty line
+    for replies that ignored the format, since an early 'no' inside reasoning
+    should not outrank the verdict.
     """
+    marked = answer_line(text)
+    if marked is not None:
+        text = marked
     lines = [ln.strip() for ln in text.strip().splitlines() if ln.strip()]
     for candidate in ([lines[-1]] if lines else []) + [text]:
         yes = _YES_RE.search(candidate)
@@ -311,17 +340,41 @@ def parse_vote(text: str) -> bool | None:
 
 
 def parse_dollars(text: str) -> float | None:
-    """Parse a single dollar amount, preferring one prefixed with '$'."""
-    cleaned = text.replace(",", "")
-    dollar = re.search(r"\$\s*(\d+(?:\.\d+)?)", cleaned)
-    if dollar:
-        return float(dollar.group(1))
-    match = _NUMBER_RE.search(cleaned)
-    return float(match.group(0).replace(",", "")) if match else None
+    """Parse a single dollar amount.
+
+    Prefers the delimited ANSWER line. Failing that, last '$' on the final
+    non-empty line, then the last '$' in the full text -- a best-effort fallback
+    for replies that ignored the format, not the intended path.
+    """
+    marked = answer_line(text)
+    if marked is not None:
+        text = marked
+
+    def _from(chunk: str) -> float | None:
+        cleaned = chunk.replace(",", "")
+        dollars = list(re.finditer(r"\$\s*(\d+(?:\.\d+)?)", cleaned))
+        if dollars:
+            return float(dollars[-1].group(1))
+        match = list(_NUMBER_RE.finditer(cleaned))
+        return float(match[-1].group(0).replace(",", "")) if match else None
+
+    lines = [ln.strip() for ln in text.strip().splitlines() if ln.strip()]
+    if lines:
+        last_line = _from(lines[-1])
+        if last_line is not None:
+            return last_line
+    return _from(text)
 
 
 def parse_interval(text: str) -> tuple[float, float, float] | None:
-    """Parse p10/p50/p90 as three ascending numbers."""
+    """Parse p10/p50/p90 as three ascending numbers.
+
+    Reads the delimited ANSWER line when present, so figures mentioned while
+    reasoning cannot be mistaken for the interval.
+    """
+    marked = answer_line(text)
+    if marked is not None:
+        text = marked
     nums = [float(m.group(0).replace(",", "")) for m in _NUMBER_RE.finditer(text)]
     if len(nums) < 3:
         return None

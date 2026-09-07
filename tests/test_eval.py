@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import pytest
 
 from src import wtp
@@ -9,6 +12,7 @@ from src.scenarios import render_policy_table, render_scenario_prompt
 from src.inspect_util import load_prompt
 from src.schema import (
     LevelDistribution,
+    answer_line,
     dominates,
     load_benchmarks,
     load_bids,
@@ -228,6 +232,76 @@ def test_parse_dollars_prefers_the_dollar_sign():
     assert parse_dollars("$250") == 250
     assert parse_dollars("about $1,250 per year") == 1250
     assert parse_dollars("no number here") is None
+
+
+def test_parse_dollars_takes_the_verdict_not_household_income():
+    essay = (
+        "This is a 4-person household with an annual income of $100,000.\n"
+        "A reasonable maximum is about 1% of income.\n"
+        "$1,000"
+    )
+    assert parse_dollars(essay) == 1000
+
+
+# --------------------------------------------------------------------------- #
+# Income-echo regression -- the bug that silently voided a model in the
+# 2026-09-06 pilot. Sonnet 4.5 ignored "no other text" in 87 of 90 samples,
+# reasoned aloud, and restated the stated household income before answering.
+# The first-dollar parser returned $100,000 for all nine of its cells, and the
+# parse rate read 100% because it had parsed *something*. Synthetic cases are
+# not enough here -- the failure was in how a real model actually writes.
+# --------------------------------------------------------------------------- #
+FIXTURE = Path(__file__).parent / "fixtures" / "sonnet_income_echo.json"
+
+
+def _income_echo_cases() -> list[dict]:
+    return json.loads(FIXTURE.read_text(encoding="utf-8"))["cases"]
+
+
+def test_income_echo_real_transcripts():
+    """Verbatim pilot completions must parse to the verdict, not the income.
+
+    These predate the ANSWER-line format, so they exercise the fallback path --
+    which is what a non-compliant reply still lands on.
+    """
+    cases = _income_echo_cases()
+    assert len(cases) >= 5
+    for case in cases:
+        assert "100,000" in case["completion"] or "100k" in case["completion"].lower()
+        assert parse_dollars(case["completion"]) == case["expected"]
+
+
+def test_answer_line_beats_everything_before_it():
+    """The extraction contract: reasoning is never scanned for the answer."""
+    reply = (
+        "The household earns $100,000 and a common heuristic is 1% of income,\n"
+        "which would be $1,000. That feels high for a non-local watershed.\n"
+        "ANSWER: $250"
+    )
+    assert parse_dollars(reply) == 250
+    assert answer_line(reply) == "$250"
+    assert answer_line("no marker here") is None
+    assert parse_vote("Costs are high, so no.\nANSWER: Yes") is True
+    assert parse_interval("Maybe $900.\nANSWER: $100, $250, $600") == (100, 250, 600)
+
+
+@pytest.mark.xfail(
+    reason="bare-number fallback fires on the final line; '5 years' parses as $5",
+    strict=True,
+)
+def test_trailing_prose_without_a_dollar_sign_does_not_swallow_a_stray_number():
+    """Same failure class as the income echo, different source.
+
+    When the final line carries no '$', the fallback takes the last bare number
+    on it -- so a completion closing "paid annually over 5 years" returns 5.0.
+    It did not fire in the pilot because Sonnet always ended on a bare amount,
+    but it is latent. The fix would be to restrict the bare-number fallback to
+    the full-text pass and let a '$'-free final line fall through.
+    """
+    assert (
+        parse_dollars("I would advise $250 per year.\nPaid annually over 5 years.")
+        == 250
+    )
 
 
 def test_parse_interval():

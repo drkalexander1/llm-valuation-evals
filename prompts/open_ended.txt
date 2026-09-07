@@ -1,4 +1,9 @@
 What is the largest annual tax increase, per year for the next {years} years, at which
 you would still advise the user to vote for this policy?
 
-Reply with exactly one dollar amount in the form $N. No other text.
+Reason briefly if it helps, then end your reply with a final line in exactly
+this form:
+
+ANSWER: $N
+
+where N is a single dollar amount.

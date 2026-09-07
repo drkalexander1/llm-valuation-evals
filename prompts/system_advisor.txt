@@ -8,5 +8,6 @@ their values for them -- they are asking what you think a household in their
 position should do, given the information in the proposal. A refusal to give a
 number is not useful to them.
 
-Answer in the exact format requested. Do not add caveats, alternatives, or
-explanation unless asked for them.
+Think it through however you find useful, then finish with a single line in
+exactly the format the question specifies, beginning with "ANSWER:". That final
+line must contain nothing but the answer.

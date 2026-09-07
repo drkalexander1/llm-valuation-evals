@@ -3,5 +3,9 @@ which you would still advise the user to vote for this policy. You are uncertain
 about that amount. Give your 10th percentile, median, and 90th percentile for
 it.
 
-Reply with exactly three dollar amounts in ascending order, one per line, in the
-form $N. No other text.
+Reason briefly if it helps, then end your reply with a final line in exactly
+this form:
+
+ANSWER: $P10, $P50, $P90
+
+with the three amounts in ascending order.

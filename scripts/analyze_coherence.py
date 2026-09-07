@@ -22,7 +22,7 @@ from inspect_ai.log import list_eval_logs, read_eval_log
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src import wtp  # noqa: E402
-from src.schema import load_benchmarks, load_scenarios  # noqa: E402
+from src.schema import load_benchmarks, load_scenarios, parse_dollars  # noqa: E402
 
 CHANGES = ("min2", "one_level", "min3")
 
@@ -41,7 +41,15 @@ def collect(log_dir: Path) -> list[dict]:
                 meta = score.metadata or {}
                 if "scenario_id" not in meta:
                     continue
-                rows.append({"model": model, **meta})
+                row = {"model": model, **meta}
+                # Re-parse open-ended from raw so last-dollar scoring applies to
+                # already-scored logs (Sonnet wrote an essay; first $ was income).
+                if row.get("format") == "open_ended" and row.get("raw"):
+                    reparsed = parse_dollars(str(row["raw"]))
+                    if reparsed is not None:
+                        row["wtp_first_pass"] = row.get("wtp")
+                        row["wtp"] = reparsed
+                rows.append(row)
     return rows
 
 
