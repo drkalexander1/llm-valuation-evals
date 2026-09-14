@@ -3,20 +3,43 @@
 When a language model is handed a real environmental valuation instrument, do
 the numbers it produces cohere with each other?
 
-This administers the stated-preference referendum from Vossler, Dolph, Finlay,
-Keiser, Kling & Phaneuf (2023), *Valuing improvements in the ecological integrity
-of local and regional waters using the biological condition gradient*,
-[PNAS 120(18) e2120251119](https://doi.org/10.1073/pnas.2120251119), to frontier
-models — using the survey's own wording, its own six-level quality scale, and its
-own published bid ladder.
+This administers the stated-preference referendum from Vossler et al. (2023,
+PNAS) to frontier models — using the survey's own wording, its own six-level
+quality scale, and its own published bid ladder. Full citation and links below.
 
 Built on [Inspect AI](https://inspect.aisi.org.uk/), alongside
 [`llm-anchoring-evals`](https://github.com/drkalexander1/llm-anchoring-evals)
 and the rest of the weekly evaluation program.
 
-**Status: this week's pilot is the open-ended arm** (9 scenarios × 10 epochs).
-Referendum and interval are built and held for next week. Design is in
-[`PLAN.md`](PLAN.md); the prediction must be committed before any generations.
+## The source study
+
+Everything here is built on one paper. Read it first if you want the design to
+make sense.
+
+- **Paper** — Vossler, Dolph, Finlay, Keiser, Kling & Phaneuf (2023), *Valuing
+  improvements in the ecological integrity of local and regional waters using
+  the biological condition gradient*,
+  [PNAS 120(18) e2120251119](https://doi.org/10.1073/pnas.2120251119)
+- **Free full text** —
+  [PMC10160978](https://pmc.ncbi.nlm.nih.gov/articles/PMC10160978/)
+- **The survey as administered** — supplementary file `pnas.2120251119.sd01.pdf`
+  on the paper page: every screen respondents saw, including the referendum
+  wording and the policy-summary table this repo reproduces
+- **SI appendix** — `pnas.2120251119.sapp.pdf`: experimental design, the mixed
+  logit specifications, and Tables S1–S7 (S6 has the sample's socio-economic
+  statistics, S2 the baseline quality distribution used to build the scenarios)
+
+## Status
+
+**The open-ended arm ran on 6 September 2026** — four models, nine scenarios,
+ten draws each. Results and the parser post-mortem are in
+[`RESULTS.md`](RESULTS.md).
+
+Treat it as exploratory. No prediction was frozen, n is 10 per cell, and the
+direction is the evidence rather than any individual p-value. The referendum and
+interval arms are built and run next, with the prediction committed before any
+generations — that being the point in a research line where pre-registration
+does real work. Design is in [`PLAN.md`](PLAN.md).
 
 ## The question, and what it is not
 
