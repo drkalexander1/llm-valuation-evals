@@ -129,6 +129,138 @@ study-region column, then drop a model.
 6. Published WTP are mixed-logit estimates (Model 1, 500 Halton draws,
    delta-method SEs), not raw response means.
 
+---
+
+# R13 — advisor vs household persona (frozen 2026-09-14)
+
+## Question
+
+Is the advisor framing producing R12's levels? R12 put the model in the
+advisor's chair on purpose (Deviation 4). R13 tests that choice: same questions,
+asked of a model speaking as a member of the household.
+
+## Design
+
+- **Arms:** advisor (`system_advisor.txt` + `open_ended.txt`) vs persona
+  (`system_persona.txt` + `open_ended_persona.txt`), run together.
+- **Why advisor is rerun rather than taken from R12:** R12 ran under the
+  pre-`eba168b` prompts ("Reply with exactly one dollar amount in the form $N. No
+  other text." / "Do not add caveats"). The current prompts allow reasoning and
+  require an `ANSWER:` line — so three of the four models have never reasoned in
+  this eval. R12 is not the control; the concurrent advisor arm is. Advisor
+  rerun vs R12 is reported descriptively (the effect of allowing reasoning), with
+  no prediction.
+- **Held from R12:** 4 models, 9 scenarios, open-ended, 10 epochs, T = 1,
+  `with_levels=true`, Fig. S2 baseline. Referendum and interval still deferred.
+- **Cost:** 2 arms x 90 x 4 models = 720 generations.
+- **Persona changes the speaker and nothing else.** Same household facts (4
+  people, $100,000, basin). No name, demographics, or politics.
+- **The manipulation bundles two things:** speaker (they -> I) and mood (what a
+  household *should* do -> what I *would* do). Bundled on purpose to keep this
+  light. If the level moves, unbundling them is the follow-up.
+- **Note on referent.** The instrument's own wording is second person — "Increase
+  in taxes to your household", "Water quality near your home", "Your local
+  watershed" — while the advisor prompt speaks of "the user". The advisor arm
+  therefore has a mixed referent for "you"; the persona arm is the one where the
+  verbatim instrument reads consistently. Relevant if the level moves.
+
+## Primary endpoint — level shift
+
+Per model: **L = geometric mean over the 9 cells of (persona median / advisor
+median).**
+
+| Outcome | Rule |
+|---|---|
+| A. No change | 0.75 <= L <= 1.33 |
+| B. Drop | L < 0.75 |
+| C. Rise | L > 1.33 |
+
+Why these bounds. Symmetric in log space (a factor of 4/3 either way).
+Averaging nine cells means a single cell jumping a whole chip ($500 -> $1,000
+for mini) moves L by at most ~8% (2^(1/9)), so one lumpy cell cannot trip the
+band. Tighter than 1.5 because of Haiku: on R12's table the models sit above
+the human means by roughly 1.4x (Haiku), 2.0x (Sonnet), 2.5x (GPT-4o), 3.8x
+(mini) — geometric mean over the nine cells. Haiku moving all the way to the
+human levels is L ~ 0.72, which a 0.67 band would have scored as no change.
+(Those ratios are from R12's prompts; the advisor rerun may move them.)
+
+- **Uncertainty:** bootstrap 95% interval on L (resample draws within cell,
+  2,000 reps), reported beside the point estimate. The point estimate decides.
+- **Headline:** an outcome is the headline if at least 3 of 4 models land in
+  it; otherwise the result is *mixed* and reported per model.
+- **Parse gate:** a model whose persona parse rate is below 80% is not scored on
+  L. Its refusal rate is the result for that model.
+- **Zeros:** a cell with a $0 median in either arm is dropped from L and
+  reported. (R12 had none.)
+
+## Interpretation, fixed in advance
+
+- **A. No change (expected).** The advisor frame is not what produced R12's
+  levels. The design choice stands; persona is closed for this instrument.
+- **B. Drop.** Framing moves the level. For every model this is toward the
+  human means, since all four start above them; closeness is reported per model
+  as a secondary. Warrants deciding which frame to use — and that choice rests
+  on coherence (below), not on which frame lands nearer the human numbers.
+  Next step: unbundle speaker from mood.
+- **C. Rise.** Framing moves the level away from the human means. Two readings,
+  separated in advance by the parse and coherence checks:
+  - *Prompt or construct problem* — persona parse rate falls, refusals rise, or
+    coherence collapses in the persona arm.
+  - *A real framing effect* — parse rate and coherence hold. Candidate
+    explanation: an analogue of hypothetical bias (stated WTP above what people
+    actually pay). To take to Catherine.
+- **Across all three — distance decay decides which frame answers the question
+  better.** If distance decay reverses in the persona arm for a model where it
+  held under advisor, persona is answering the question worse for that model,
+  however close its levels land to the human means. A level nearer the humans
+  does not rescue a frame that fails a rational check. The mirror case — a
+  reversal under advisor that persona removes — counts for persona.
+
+## Secondary — coherence in each arm
+
+1. **Distance decay — a validity check, not a preference.** Baseline and
+   improvement are held identical across spatial units (Deviation 5), so the
+   only difference between the local and non-local watershed is whether it
+   contains the household's home. Local delivers everything non-local does, plus
+   use value, so `WTP(local) >= WTP(nonlocal)` is the rational answer. A
+   **reversal** (nonlocal median > local median) is a failure to answer the
+   question. A **tie** is flat but defensible (a household with no use value)
+   and is reported, not scored as a failure. The argument fixes the direction,
+   not the ratio: a nonlocal/local ratio drifting toward 1 is not by itself
+   worse. Checked per change type (3 per model, 12 per arm). R12: 12 / 12
+   strictly decaying, no ties.
+2. **Nested dominance.** `min2 >= min3`, per spatial unit (3 per model, 12 per
+   arm; ties pass). R12: 2 violations in 12. *Increase* = persona has at least
+   2 more violations than advisor. Reads differently by arm: under advisor a
+   violation is an error (the normative argument); under persona it is scope
+   insensitivity, which human respondents also show.
+3. **Scope ordering and spatial scale.** Reported, not predicted.
+
+## Prediction — FREEZE BEFORE RUNNING
+
+Daniel's bets:
+
+- **Level:** A (no change) in all four models.
+- **Distance decay under persona:** no directional bet. Frozen instead as the
+  interpretation rule above — a reversal under persona means persona answers
+  the question worse, regardless of level.
+- **Nested-dominance violations under persona vs advisor:** no bet; reported.
+- **Advisor rerun vs R12:** not predicted.
+
+Frozen 2026-09-14, in the commit that adds this section and the persona prompts
+(`git log -- PLAN.md`). Any later change to this section or to
+`system_persona.txt` / `open_ended_persona.txt` is a deviation and is logged as
+one.
+
+## Pre-run checks (R13)
+
+- [x] Persona prompts reviewed and frozen with the prediction
+- [ ] `direct_wtp` takes a `frame` argument selecting both system and question
+      prompt
+- [ ] Persona smoke test: parse rate and refusals on a few samples per model
+- [ ] `pytest -q` clean
+- [x] Prediction committed
+
 ## Attribution
 
 Instrument, scale, and all human estimates: Vossler, Dolph, Finlay, Keiser,

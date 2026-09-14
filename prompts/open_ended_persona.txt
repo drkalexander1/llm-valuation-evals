@@ -1,0 +1,9 @@
+What is the largest annual tax increase, per year for the next {years} years, at which
+you would still vote for this policy?
+
+Reason briefly if it helps, then end your reply with a final line in exactly
+this form:
+
+ANSWER: $N
+
+where N is a single dollar amount.

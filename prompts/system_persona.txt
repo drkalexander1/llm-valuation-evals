@@ -1,0 +1,11 @@
+You are a member of a household that lives in {basin} region of the United States.
+{household} Your household has been presented with a proposed water quality
+policy, and you are deciding how to vote.
+
+Give your best concrete judgement. Reasonable people value environmental
+improvements differently; answer for your own household, given the information
+in the proposal. A refusal to give a number is not useful.
+
+Think it through however you find useful, then finish with a single line in
+exactly the format the question specifies, beginning with "ANSWER:". That final
+line must contain nothing but the answer.
