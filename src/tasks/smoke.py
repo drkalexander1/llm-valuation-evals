@@ -17,7 +17,7 @@ from inspect_ai.scorer import Score, Target, mean, scorer, stderr
 from inspect_ai.solver import TaskState, generate, system_message
 
 from src.inspect_util import load_prompt
-from src.scenarios import render_scenario_prompt
+from src.scenarios import FRAMES, SYSTEM_PROMPTS, render_scenario_prompt
 from src.schema import load_scenarios, parse_dollars, parse_interval, parse_vote
 
 # 8 referendum + 6 open-ended + 6 interval.
@@ -45,16 +45,23 @@ SMOKE: list[tuple[str, str, int | None]] = [
 ]
 
 
-def _dataset() -> MemoryDataset:
+def _dataset(frame: str) -> MemoryDataset:
+    if frame not in FRAMES:
+        raise ValueError(f"frame must be one of {FRAMES}, got {frame!r}")
+    items = (
+        [item for item in SMOKE if item[1] == "open_ended"]
+        if frame == "persona"
+        else SMOKE
+    )
     scenarios = {s.id: s for s in load_scenarios()}
     samples: list[Sample] = []
-    for scenario_id, fmt, bid in SMOKE:
+    for scenario_id, fmt, bid in items:
         scenario = scenarios[scenario_id]
         samples.append(
             Sample(
                 id=f"{scenario_id}/{fmt}/{bid if bid is not None else 'na'}",
                 input=render_scenario_prompt(
-                    scenario, bid, fmt, with_levels=True
+                    scenario, bid, fmt, with_levels=True, frame=frame
                 ),
                 target="",
                 metadata={
@@ -63,6 +70,7 @@ def _dataset() -> MemoryDataset:
                     "locality": scenario.locality,
                     "bid": bid,
                     "format": fmt,
+                    "frame": frame,
                 },
             )
         )
@@ -101,10 +109,10 @@ def smoke_parsed():
 
 
 @task
-def smoke() -> Task:
+def smoke(frame: str = "advisor") -> Task:
     return Task(
-        dataset=_dataset(),
-        solver=[system_message(load_prompt("system_advisor.txt")), generate()],
+        dataset=_dataset(frame),
+        solver=[system_message(load_prompt(SYSTEM_PROMPTS[frame])), generate()],
         scorer=smoke_parsed(),
         config=GenerateConfig(temperature=0.0),
     )

@@ -2,7 +2,14 @@
 
 from __future__ import annotations
 
-from scripts.analyze_coherence import direct_wtp, primary_wtp, report
+import pytest
+
+from scripts.analyze_coherence import (
+    direct_wtp,
+    level_shift_L,
+    primary_wtp,
+    report,
+)
 
 
 def _oe(model: str, sid: str, amount: float) -> dict:
@@ -44,3 +51,50 @@ def test_open_ended_pilot_scores_dominance_and_scope(capsys):
     assert local["wtp_primary"] == 400
     assert local["primary_source"] == "open_ended"
     assert local["wtp_referendum"] is None
+    assert local["frame"] == "advisor"
+
+
+def test_frames_do_not_mix_when_scoring_medians():
+    rows = [
+        {**_oe("m", "min2_local_watershed", 100), "frame": "advisor"},
+        {**_oe("m", "min2_local_watershed", 400), "frame": "persona"},
+    ]
+    medians = direct_wtp(rows)
+    assert medians[("m", "min2_local_watershed", "open_ended", "advisor")] == 100
+    assert medians[("m", "min2_local_watershed", "open_ended", "persona")] == 400
+
+
+def test_level_shift_L_is_one_when_arms_match():
+    cells = [
+        "min2_local_watershed",
+        "one_level_local_watershed",
+        "min3_local_watershed",
+    ]
+    advisor = {sid: [100.0, 100.0] for sid in cells}
+    persona = {sid: [100.0, 100.0] for sid in cells}
+    shift = level_shift_L(advisor, persona, n_boot=50)
+    assert shift["L"] == pytest.approx(1.0)
+    assert shift["label"] == "A. No change"
+    assert shift["dropped"] == []
+
+
+def test_level_shift_L_doubles_when_persona_is_twice_advisor():
+    cells = [
+        "min2_local_watershed",
+        "one_level_local_watershed",
+        "min3_local_watershed",
+    ]
+    advisor = {sid: [100.0] for sid in cells}
+    persona = {sid: [200.0] for sid in cells}
+    shift = level_shift_L(advisor, persona, n_boot=20)
+    assert shift["L"] == pytest.approx(2.0)
+    assert shift["label"] == "C. Rise"
+
+
+def test_level_shift_L_drops_zero_median_cells():
+    advisor = {"keep": [100.0], "zero": [0.0]}
+    persona = {"keep": [100.0], "zero": [50.0]}
+    shift = level_shift_L(advisor, persona, n_boot=10)
+    assert shift["used"] == ["keep"]
+    assert shift["dropped"] == ["zero"]
+    assert shift["L"] == pytest.approx(1.0)

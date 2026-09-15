@@ -1,4 +1,193 @@
-# Open-ended pilot — 6 September 2026
+# R13 — advisor vs household persona — 14 September 2026
+
+Same nine cells, same four models, ten draws, temperature 1. Two arms under
+the `ANSWER: $N` prompts: advisor (the control) vs a thin household persona
+("you are a member of this 4-person, $100,000 household"). 720/720 parsed.
+Logs: `logs/r13/`. Worksheet: `results/r13.csv`. Frozen plan is in `PLAN.md`.
+
+R12 is **not** the control. R12 forbade reasoning ("reply with exactly `$N`").
+R13 lets every model reason. The persona test is advisor-rerun vs persona.
+Advisor-rerun vs R12 is the effect of allowing reasoning, reported with no
+bet.
+
+**Prediction:** A (no change) on all four — geometric mean of persona/advisor
+cell medians inside `[0.75, 1.33]`. **Headline: mixed.** Anthropic did not
+move. GPT-4o dropped clearly. Mini is scored a drop by 0.008.
+
+| Model | L (persona / advisor) | 95% boot | Call | Resampled L in the called band |
+|---|---|---|---|---|
+| Haiku | 0.985 | 0.72–1.38 | A. No change | 92% |
+| Sonnet | 1.195 | 0.95–1.38 | A. No change | 95% |
+| GPT-4o | 0.672 | 0.62–0.81 | B. Drop | 81% |
+| GPT-4o mini | 0.742 | 0.59–1.07 | B. Drop | 35% |
+
+The frozen rule lets the point estimate decide, so mini stays B. It is the
+weakest call in the table: 65% of resamples land in no change. Intervals are
+seeded now (`BOOT_SEED = 13`) so they reproduce. The last column is from
+`scripts/audit_r13.py`, added after the run and not predeclared.
+
+## How far they moved from R12
+
+Geometric mean over the nine cells of (this week's median / R12 median).
+Same L construction as the persona test; no prediction was frozen.
+
+| Model | Advisor / R12 | Persona / advisor | Persona / R12 | vs humans (R12 → advisor → persona) |
+|---|---|---|---|---|
+| Haiku | **2.79** | 0.99 | 2.75 | 1.4x → 3.8x → 3.8x |
+| Sonnet | 0.80 | 1.20 | 0.96 | 2.0x → 1.6x → 2.0x |
+| GPT-4o | **2.28** | **0.67** | 1.53 | 2.5x → 5.8x → 3.9x |
+| Mini | 0.80 | **0.74** | 0.59 | 3.8x → 3.1x → 2.3x |
+
+Allowing reasoning moved Haiku and GPT-4o more than the persona did. Haiku's
+one-level local went 310 → 1000; min3 local 320 → 1650. GPT-4o roughly doubled
+every cell (local min2 850 → 2000). Sonnet and mini eased down ~20% from R12,
+then diverged: Sonnet's persona ticked back up, mini's persona medians settled
+on $500 (7 of 9 cells, though only 32 of its 90 draws are $500).
+
+Two checks that this is the prompt and not something else
+(`scripts/audit_r13.py`):
+
+- **Same models.** The API returned the same dated snapshot in R12 and R13 for
+  all four (`claude-haiku-4-5-20251001`, `claude-sonnet-4-5-20250929`,
+  `gpt-4o-2024-08-06`, `gpt-4o-mini-2024-07-18`).
+- **The prompt really changed what they did.** In R12, Haiku, GPT-4o and mini
+  wrote a median of 4–6 characters before the answer — a bare `$N`. In R13
+  every model writes 1,000–2,000. Sonnet was already writing ~1,300 in R12,
+  and it moved least (0.80): the closest thing here to a control.
+
+So: R12's levels were not "the advisor frame." They came from the prompt
+format. Two limits on that. It is the prompt change, not reasoning alone —
+the rewrite also dropped "do not add caveats" and added the `ANSWER:` line.
+And it is not uniform: mini started reasoning too and moved only 0.80. Once
+every model is allowed to think, the household "you" vs "they" is a smaller
+knob, and it trips the predeclared band for GPT-4o clearly and for mini by a
+hair.
+
+## Medians (local / nonlocal / region)
+
+Human Table 2 in parentheses.
+
+**Advisor (R13 control)**
+
+| Policy | Haiku | Sonnet | GPT-4o | Mini | Human |
+|---|---|---|---|---|---|
+| One-level | 1000 / 1150 / 1200 | 700 / 188 / 550 | 1500 / 1000 / 1750 | 800 / 1000 / 1200 | 316 / 165 / 300 |
+| Min 2 | 600 / 575 / 775 | 725 / 162 / 775 | 2000 / 1000 / 2000 | 1000 / 500 / 1000 | 492 / 225 / 463 |
+| Min 3 | 1650 / 975 / 1050 | 525 / 142 / 575 | 1500 / 1000 / 1500 | 1000 / 450 / 400 | 217 / 95 / 207 |
+
+**Persona**
+
+| Policy | Haiku | Sonnet | GPT-4o | Mini | Human |
+|---|---|---|---|---|---|
+| One-level | 700 / 700 / 1200 | 900 / 162 / 725 | 1000 / 500 / 1500 | 750 / 1000 / 500 | 316 / 165 / 300 |
+| Min 2 | 1050 / 1200 / 1000 | 1100 / 188 / 1000 | 1750 / 500 / 2000 | 500 / 500 / 500 | 492 / 225 / 463 |
+| Min 3 | 1500 / 700 / 700 | 700 / 175 / 525 | 1000 / 500 / 1000 | 500 / 500 / 500 | 217 / 95 / 207 |
+
+R12 table is below, for the side-by-side: Haiku 310/240/320, Sonnet 850/150/1000,
+GPT-4o 700/450/750, mini 1000/600/1000 on one-level.
+
+## Coherence, scored as frozen
+
+Distance: a **reversal** (nonlocal > local) is a failure. A **tie** is
+reported, not a failure. Nested dominance: `min2 >= min3`; ties pass.
+
+| Model | Distance (R12 → advisor → persona) | Nest (violations / 3) |
+|---|---|---|
+| Haiku | 3/3 decay → **1 reversal** → 1 reversal + 1 tie | 0 → **3** → 1 |
+| Sonnet | steep ~0.2, holds in all three | 1 → **0** → 0 |
+| GPT-4o | ~0.6, holds in all three (persona a bit steeper) | 0 → 0 → 0 |
+| Mini | 3/3 decay → **1 reversal** → 1 reversal + 2 ties | 1 → 0 → 0 |
+
+**How firm these calls are.** Each is a comparison of two medians of ten, and
+Haiku's draws within one cell run from $150 to $2,000. Resampling the draws
+within each cell (`scripts/audit_r13.py`, 2,000 reps, not predeclared), the
+chance each flagged violation holds:
+
+| Call | P(violation) |
+|---|---|
+| Haiku advisor, distance reversal (one-level) | 0.48 |
+| Haiku persona, distance reversal (min2) | 0.61 |
+| Haiku advisor, nest violation: local / nonlocal / region | 0.98 / 0.80 / 0.63 |
+| Haiku persona, nest violation (local) | 0.76 |
+| Mini advisor / persona, distance reversal (one-level) | 0.73 / 0.47 |
+| Sonnet and GPT-4o, any distance cell, either arm | ≤ 0.02 |
+
+So the distance "reversals" for Haiku and mini are closer to flat than
+reversed. The calls that survive resampling are Sonnet's and GPT-4o's distance
+decay (solid everywhere) and Haiku's local nest violation under advisor.
+
+The predeclared rule: if distance reverses under persona where it held under
+advisor, persona is answering the question worse, even if the dollars move
+toward the humans. Read per model — "for a model where it held," as frozen —
+that case **does not fire**: Haiku and mini already reverse on the advisor
+rerun. Read per change type, it would fire once, on Haiku min2 (600 vs 575
+under advisor, 1050 vs 1200 under persona). Both of those sit inside the noise
+(0.37 and 0.61 above), so the reading does not change the conclusion, but the
+per-model reading is the one scored here. GPT-4o's drop keeps distance and the
+nest, so it is a real framing effect under the plan — next step, if we chase
+it, is unbundling speaker ("I") from mood ("would" vs "should"). Mini's
+persona medians sit on $500 and distance goes flat; closer to humans is not a
+reason to keep that frame.
+
+Sonnet is the one model whose story is stable across R12 and both R13 arms:
+steep local/nonlocal split, nest now holds, persona does not move the level
+past the band.
+
+Haiku is the warning about "allow reasoning." R12 Haiku looked like the
+best-behaved small model (distance held, nest held, some cells on the human
+means). The advisor rerun nearly triples its level and spreads its answers
+across a factor of ten within a cell. Its nest fails at the local watershed
+(0.98 under resampling); distance goes flat rather than cleanly reversing.
+Persona does not fix that. The $240/$280 palette from R12 is gone
+once it is allowed to write a paragraph.
+
+## What this does to the design
+
+- **Persona is not closed.** The bet was all four in A. Two of four were
+  scored as drops. For GPT-4o that drop is clean enough to be a result. For
+  mini it is a palette shift, and a borderline one (L 0.742, 35% of resamples
+  in the drop band). Unbundle speaker vs mood only if we care about the GPT-4o
+  drop; do not pile on a richer persona until that is separate.
+- **Do not treat R12 as the advisor baseline.** The prompt format moved Haiku
+  and GPT-4o by more than 2x. Any later arm (referendum, income off the page)
+  should keep the `ANSWER:` line so it matches this week's control, not R12.
+- **Referendum is still the check on whether these dollars are valuation.**
+  Several cells sit at or above $750, and GPT-4o advisor is $1000–$2000. A
+  ladder that tops out at $750 will not turn over for those models.
+- **The next pre-registration needs a noise floor on coherence calls.** A
+  median of ten cannot carry a per-cell call for a model whose draws span a
+  factor of ten. Freeze a resampling threshold together with the rule, not
+  after the run.
+
+## Note for Catherine (R13)
+
+Asked the same nine cells two ways: advise a household, or *be* a member of
+that household. Same income ($100k), no extra biography. Prediction was that
+the dollars would not move. Anthropic did not (Haiku L=0.99, Sonnet L=1.20).
+Both GPTs dropped by the rule we froze (4o L=0.67, mini L=0.74). GPT-4o's is
+the solid one; mini's is a hair under the cutoff, and only about a third of
+resamples reproduce it.
+
+The larger shift was not the "you." It was letting the model reason at all.
+R12 said "reply with exactly `$N`." This week every model writes a paragraph
+then an `ANSWER:` line. Same model versions both weeks, so it is the prompt.
+Haiku's levels almost tripled, its answers spread out, and it now pays more
+for the smaller improvement at the local watershed.
+GPT-4o roughly doubled, then the persona brought it partway back. Sonnet is
+the stable one: still ~0.2 nonlocal/local, nest now holds, persona does not
+matter.
+
+I would not pick a frame by which table is closer to the human means. Mini's
+persona lands nearer because its medians settle on $500. Distance goes flat
+for Haiku and mini once they reason — flat, not clearly reversed, at ten
+draws a cell — so that is about the prompt, not a reason to become the
+household. GPT-4o's drop is the one clean framing
+effect; if we chase it, the next cut is "I" vs "should," not a thicker
+persona.
+
+---
+
+# R12 — open-ended pilot — 6 September 2026
 
 Nine scenarios from Vossler, Dolph, Finlay, Keiser, Kling & Phaneuf (2023),
 asked as an open-ended maximum annual tax. Four models, ten draws each at

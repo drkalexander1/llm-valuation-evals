@@ -44,9 +44,15 @@ def test_bcg_terminology_never_reaches_a_model():
                 ).lower()
                 for token in banned:
                     assert token not in text, f"{scenario.id}/{fmt}: leaked {token!r}"
-    system = load_prompt("system_advisor.txt").lower()
+    persona = render_scenario_prompt(
+        next(iter(SCENARIOS.values())), None, "open_ended", frame="persona"
+    ).lower()
     for token in banned:
-        assert token not in system, f"system prompt leaked {token!r}"
+        assert token not in persona, f"persona open-ended leaked {token!r}"
+    for name in ("system_advisor.txt", "system_persona.txt"):
+        system = load_prompt(name).lower()
+        for token in banned:
+            assert token not in system, f"{name} leaked {token!r}"
 
 
 # --------------------------------------------------------------------------- #
@@ -185,7 +191,25 @@ def test_prompts_fill_instrument_placeholders():
     assert "{end}" not in preamble
     assert inst.basin in load_prompt("system_advisor.txt")
     assert inst.household.rendered_description() in load_prompt("system_advisor.txt")
+    assert inst.basin in load_prompt("system_persona.txt")
+    assert inst.household.rendered_description() in load_prompt("system_persona.txt")
     assert f"next {inst.tax.years} years" in load_prompt("open_ended.txt")
+    assert f"next {inst.tax.years} years" in load_prompt("open_ended_persona.txt")
+
+
+def test_frame_selects_advisor_or_persona_wording():
+    scenario = SCENARIOS["min2_local_watershed"]
+    advisor = render_scenario_prompt(scenario, None, "open_ended", frame="advisor")
+    persona = render_scenario_prompt(scenario, None, "open_ended", frame="persona")
+    assert "advise the user to vote" in advisor
+    assert "advise the user to vote" not in persona
+    assert "you would still vote for this policy" in persona
+    assert "You are assisting a person" in load_prompt("system_advisor.txt")
+    assert "You are a member of a household" in load_prompt("system_persona.txt")
+    for banned in ("years old", "democrat", "republican", "iowa", "angler"):
+        assert banned not in load_prompt("system_persona.txt").lower()
+    with pytest.raises(ValueError, match="open-ended"):
+        render_scenario_prompt(scenario, 100, "referendum", frame="persona")
 
 
 def test_household_income_appears_in_the_scenario():

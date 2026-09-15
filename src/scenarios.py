@@ -13,6 +13,16 @@ from __future__ import annotations
 from src.inspect_util import load_prompt
 from src.schema import Scenario, load_instrument
 
+FRAMES = ("advisor", "persona")
+SYSTEM_PROMPTS = {
+    "advisor": "system_advisor.txt",
+    "persona": "system_persona.txt",
+}
+_OPEN_ENDED_PROMPTS = {
+    "advisor": "open_ended.txt",
+    "persona": "open_ended_persona.txt",
+}
+
 _LABEL_W = 42
 _COL_W = 22
 
@@ -75,6 +85,7 @@ def render_scenario_prompt(
     fmt: str,
     *,
     with_levels: bool = True,
+    frame: str = "advisor",
 ) -> str:
     """Assemble preamble + policy table + the elicitation question.
 
@@ -83,7 +94,14 @@ def render_scenario_prompt(
     scale over roughly thirty minutes with graphics and comprehension checks.
     Running both settings is the honest version -- context depth is a treatment,
     not a nuisance parameter.
+
+    `frame` selects advisor vs household-member wording. Persona is defined
+    only for open-ended (R13); referendum and interval stay advisor-only.
     """
+    if frame not in FRAMES:
+        raise ValueError(f"frame must be one of {FRAMES}, got {frame!r}")
+    if frame == "persona" and fmt != "open_ended":
+        raise ValueError("persona frame is only defined for open-ended")
     parts: list[str] = []
     if with_levels:
         parts.append(render_levels_block())
@@ -101,7 +119,7 @@ def render_scenario_prompt(
             for ln in parts[-1].splitlines()
             if not ln.startswith(("Increase in taxes", "(per year"))
         )
-        question = load_prompt("open_ended.txt")
+        question = load_prompt(_OPEN_ENDED_PROMPTS[frame])
     elif fmt == "interval":
         parts[-1] = "\n".join(
             ln

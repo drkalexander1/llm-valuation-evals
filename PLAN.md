@@ -255,10 +255,11 @@ one.
 ## Pre-run checks (R13)
 
 - [x] Persona prompts reviewed and frozen with the prediction
-- [ ] `direct_wtp` takes a `frame` argument selecting both system and question
+- [x] `direct_wtp` takes a `frame` argument selecting both system and question
       prompt
-- [ ] Persona smoke test: parse rate and refusals on a few samples per model
-- [ ] `pytest -q` clean
+- [x] Persona smoke test: 6/6 parsed on Haiku
+      (`python scripts/run_smoke.py --frame persona`)
+- [x] `pytest -q` clean
 - [x] Prediction committed
 
 ## Attribution

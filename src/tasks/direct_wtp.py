@@ -9,11 +9,13 @@ and whether a model does is answerable without any human number.
 The interval format reuses the p10/p50/p90 elicitation from the anchoring and
 meta-consistency rounds, so widths are comparable to that work.
 
-This week's pilot is open-ended (`python scripts/run_pilot.py`). Interval is
-held for next week.
+R12 was open-ended under the advisor frame (`python scripts/run_pilot.py`).
+R13 reruns advisor and persona together (`python scripts/run_r13.py`).
+Interval is still held.
 
 Run:
     inspect eval src/tasks/direct_wtp.py --model anthropic/claude-sonnet-4-5 --epochs 10
+    inspect eval src/tasks/direct_wtp.py --model anthropic/claude-haiku-4-5 -T frame=persona
     inspect eval src/tasks/direct_wtp.py --model anthropic/claude-haiku-4-5 -T fmt=interval
 """
 
@@ -26,19 +28,19 @@ from inspect_ai.scorer import Score, Target, mean, scorer, stderr
 from inspect_ai.solver import TaskState, generate, system_message
 
 from src.inspect_util import load_prompt
-from src.scenarios import render_scenario_prompt
+from src.scenarios import FRAMES, SYSTEM_PROMPTS, render_scenario_prompt
 from src.schema import load_scenarios, parse_dollars, parse_interval
 
 FORMATS = ("open_ended", "interval")
 
 
-def _dataset(fmt: str, with_levels: bool) -> MemoryDataset:
+def _dataset(fmt: str, with_levels: bool, frame: str) -> MemoryDataset:
     samples: list[Sample] = []
     for scenario in load_scenarios():
         samples.append(
             Sample(
                 input=render_scenario_prompt(
-                    scenario, None, fmt, with_levels=with_levels
+                    scenario, None, fmt, with_levels=with_levels, frame=frame
                 ),
                 target="",
                 metadata={
@@ -52,6 +54,7 @@ def _dataset(fmt: str, with_levels: bool) -> MemoryDataset:
                     "home_level_after": scenario.home_level_after,
                     "with_levels": with_levels,
                     "format": fmt,
+                    "frame": frame,
                 },
             )
         )
@@ -92,12 +95,17 @@ def direct_wtp(
     fmt: str = "open_ended",
     with_levels: bool = True,
     temperature: float | None = 1.0,
+    frame: str = "advisor",
 ) -> Task:
     if fmt not in FORMATS:
         raise ValueError(f"fmt must be one of {FORMATS}, got {fmt!r}")
+    if frame not in FRAMES:
+        raise ValueError(f"frame must be one of {FRAMES}, got {frame!r}")
+    if frame == "persona" and fmt != "open_ended":
+        raise ValueError("persona frame is only defined for open-ended")
     return Task(
-        dataset=_dataset(fmt, with_levels),
-        solver=[system_message(load_prompt("system_advisor.txt")), generate()],
+        dataset=_dataset(fmt, with_levels, frame),
+        solver=[system_message(load_prompt(SYSTEM_PROMPTS[frame])), generate()],
         scorer=amount_parsed(fmt),
         config=GenerateConfig(temperature=temperature)
         if temperature is not None

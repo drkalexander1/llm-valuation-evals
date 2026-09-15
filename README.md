@@ -114,9 +114,14 @@ across every scenario, format, and context setting.
 pip install -r requirements.txt
 cp .env.example .env   # add API keys
 
-# This week — open-ended pilot
+# R12 — open-ended pilot (already ran)
 python scripts/run_pilot.py
 python scripts/analyze_coherence.py logs/pilot --csv results/coherence.csv
+
+# R13 — advisor vs household persona (both arms, ANSWER-line prompts)
+python scripts/run_smoke.py --frame persona
+python scripts/run_r13.py
+python scripts/analyze_coherence.py logs/r13 --csv results/r13.csv
 
 # Next week — referendum and interval (already wired)
 inspect eval src/tasks/referendum.py --model anthropic/claude-sonnet-4-5 --epochs 10
