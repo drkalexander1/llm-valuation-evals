@@ -31,15 +31,22 @@ make sense.
 
 ## Status
 
-**The open-ended arm ran on 6 September 2026** — four models, nine scenarios,
-ten draws each. Results and the parser post-mortem are in
-[`RESULTS.md`](RESULTS.md).
+Three rounds have run. Results for all three are in [`RESULTS.md`](RESULTS.md),
+newest first.
 
-Treat it as exploratory. No prediction was frozen, n is 10 per cell, and the
-direction is the evidence rather than any individual p-value. The referendum and
-interval arms are built and run next, with the prediction committed before any
-generations — that being the point in a research line where pre-registration
-does real work. Design is in [`PLAN.md`](PLAN.md).
+- **R12, open-ended pilot (6 September 2026):** four models, nine scenarios,
+  ten draws each. Exploratory.
+- **R13, advisor vs household persona (14 September):** the same four models,
+  with the prediction frozen in git before any generations.
+- **Referendum arm (19–20 September):** six models, including Claude Sonnet 5
+  and gpt-5.6-terra, voting on ten bids from $20 to $3,000. The two newest
+  models are the only ones whose votes fall off with price, and Sonnet 5 is
+  the only one to pass scope ordering, nested dominance and distance decay.
+  Haiku 4.5 votes yes at every price. Exploratory: no prediction was frozen.
+
+Next are the interval arm, a Yes/No order swap, and a longer bid ladder for
+the local cells, each with its prediction committed first. Design is in
+[`PLAN.md`](PLAN.md).
 
 ## The question, and what it is not
 
@@ -123,8 +130,10 @@ python scripts/run_smoke.py --frame persona
 python scripts/run_r13.py
 python scripts/analyze_coherence.py logs/r13 --csv results/r13.csv
 
-# Next week — referendum and interval (already wired)
-inspect eval src/tasks/referendum.py --model anthropic/claude-sonnet-4-5 --epochs 10
+# Referendum arm (ran 19–20 September)
+python scripts/run_referendum.py
+
+# Next — interval arm (already wired)
 inspect eval src/tasks/direct_wtp.py --model anthropic/claude-sonnet-4-5 --epochs 10 -T fmt=interval
 ```
 
