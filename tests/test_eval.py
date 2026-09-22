@@ -9,7 +9,7 @@ import pytest
 
 from src import wtp
 from src.scenarios import render_policy_table, render_scenario_prompt
-from src.inspect_util import load_prompt
+from src.inspect_util import load_prompt, temp_for
 from src.schema import (
     LevelDistribution,
     answer_line,
@@ -24,6 +24,21 @@ from src.schema import (
 )
 
 SCENARIOS = {s.id: s for s in load_scenarios()}
+
+
+@pytest.mark.parametrize(
+    ("model", "expected"),
+    [
+        ("anthropic/claude-sonnet-4-5", 1.0),
+        ("anthropic/claude-haiku-4-5", 1.0),
+        ("openai/gpt-4o", 1.0),
+        ("anthropic/claude-sonnet-5", None),
+        ("openai/gpt-5.6-terra", None),
+    ],
+)
+def test_temp_for_omits_sampling_on_reasoning_mids(model, expected):
+    """Sonnet 5 / GPT-5 family 400 if temperature is sent; 4.5-era mids take 1.0."""
+    assert temp_for(model) == expected
 
 
 # --------------------------------------------------------------------------- #
@@ -214,19 +229,19 @@ def test_frame_selects_advisor_or_persona_wording():
 
 def test_household_income_appears_in_the_scenario():
     inst = load_instrument()
-    assert inst.household.income == 100000
+    assert inst.household.income == 75000
     assert inst.household.size == 4
     table = render_policy_table(SCENARIOS["min2_local_watershed"], 100)
     assert inst.household.rendered_description() in table
-    assert "$100,000" in table
+    assert "$75,000" in table
     assert "4-person" in table
     assert "earner" not in table.lower()
 
 
 def test_bids_are_the_thinned_ladder():
     bids = load_bids()
-    assert bids == [20, 100, 250, 500, 750]
-    assert bids[0] == 20 and bids[-1] == 750
+    assert bids == [20, 100, 250, 500, 750, 1000, 1500, 2000, 2500, 3000]
+    assert bids[0] == 20 and bids[-1] == 3000
 
 
 def test_every_scenario_has_a_benchmark():

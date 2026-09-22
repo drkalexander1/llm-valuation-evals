@@ -29,8 +29,10 @@ from src.scenarios import render_scenario_prompt
 from src.schema import load_bids, load_scenarios, parse_vote
 
 
-def _dataset(with_levels: bool) -> MemoryDataset:
+def _dataset(with_levels: bool, drop_study_region: bool) -> MemoryDataset:
     scenarios = load_scenarios()
+    if drop_study_region:
+        scenarios = [s for s in scenarios if s.spatial_unit != "study_region"]
     bids = load_bids()
     samples: list[Sample] = []
     for scenario in scenarios:
@@ -85,7 +87,11 @@ def vote_parsed():
 
 
 @task
-def referendum(with_levels: bool = True, temperature: float | None = 1.0) -> Task:
+def referendum(
+    with_levels: bool = True,
+    temperature: float | None = 1.0,
+    drop_study_region: bool = False,
+) -> Task:
     """Referendum arm.
 
     Args:
@@ -96,9 +102,11 @@ def referendum(with_levels: bool = True, temperature: float | None = 1.0) -> Tas
         temperature: repeats at temperature 1 stand in for the population
             heterogeneity that gives a human sample its WTP distribution. Pass
             null for reasoning models that reject the parameter.
+        drop_study_region: if true, keep only the six local/non-local watershed
+            cells (Saturday 2026-09-19 cut).
     """
     return Task(
-        dataset=_dataset(with_levels),
+        dataset=_dataset(with_levels, drop_study_region),
         solver=[system_message(load_prompt("system_advisor.txt")), generate()],
         scorer=vote_parsed(),
         config=GenerateConfig(temperature=temperature)

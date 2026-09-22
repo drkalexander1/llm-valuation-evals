@@ -12,6 +12,8 @@ from src import PROMPTS_DIR
 from src.schema import fill_instrument_placeholders
 
 # Newer Anthropic / OpenAI reasoning models reject an explicit temperature param.
+# Confirmed rejecting: claude-sonnet-5, gpt-5.x (incl. 5.6 Sol/Terra/Luna), o3, o4.
+# Those run at provider default; the T=1.0 models are the older tier. Log it.
 _ANTHROPIC_TEMPERATURE_OK_PREFIXES = ("claude-haiku-", "claude-sonnet-4", "claude-3-")
 _OPENAI_NO_TEMPERATURE_PREFIXES = ("gpt-5", "o3", "o4")
 

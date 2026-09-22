@@ -57,7 +57,7 @@ regions:
     includes_home: true
 
 household:
-  income: 100000
+  income: 75000
   size: 4
   description: "This is a {size}-person household with an annual income of {income}."
 
@@ -66,11 +66,11 @@ tax:
   start: 2022
   end: 2026
 
-# Table 1 published ladder (each human saw one, randomly assigned):
-# [20, 50, 75, 100, 150, 200, 250, 350, 500, 750]
-# Thinned here: same endpoints, fewer interior points. The model has to vote
-# at every rung; a person did not.
-bids: [20, 100, 250, 500, 750]
+# Saturday referendum (2026-09-19): ten rungs that keep the human-thinned
+# endpoints and interior points, then stretch through the open-ended support
+# (~$150–$2,000) so a model that sat above $750 can still say no.
+# Table 1 published ladder (each human saw one): [20, 50, 75, 100, 150, 200, 250, 350, 500, 750]
+bids: [20, 100, 250, 500, 750, 1000, 1500, 2000, 2500, 3000]
 
 # Study-region distribution from Vossler et al. 2023 SI Figure S2. The real
 # survey drew a respondent-specific baseline from their own watershed; holding

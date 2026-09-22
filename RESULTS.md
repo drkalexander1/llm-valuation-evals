@@ -1,3 +1,136 @@
+# Referendum arm — 19–20 September 2026
+
+Six cells (three change types x local / non-local watershed; the study-region
+column was dropped), ten bids from $20 to $3,000, ten draws per cell, advisor
+frame. **The household income was set to $75,000, to match the average income
+of the human sample in Vossler et al. (2023), rather than the $100,000 used in
+R12 and R13.** All six models complete, 600 samples each. Parse rate 600/600
+for five models and 599/600 for gpt-5.6-terra.
+
+**Exploratory: no prediction was frozen before this run.** The extended-ladder
+follow-up should be pre-registered.
+
+## The headline: two models never turn over
+
+Yes-share, pooled across the six cells.
+
+| Model | $20 | $250 | $750 | $1,500 | $3,000 |
+|---|---|---|---|---|---|
+| Haiku 4.5 | 1.00 | 1.00 | 1.00 | 1.00 | **1.00** |
+| GPT-4o mini | 1.00 | 1.00 | 1.00 | 1.00 | 0.87 |
+| Sonnet 4.5 | 1.00 | 0.92 | 0.68 | 0.62 | 0.50 |
+| GPT-4o | 1.00 | 0.97 | 0.85 | 0.53 | 0.32 |
+| gpt-5.6-terra | 1.00 | 1.00 | 0.70 | 0.28 | 0.08 |
+| **Sonnet 5** | 1.00 | 0.97 | 0.62 | 0.23 | **0.00** |
+
+The split is by model generation, not by lab. The two current mid-tier models
+(Sonnet 5 and terra) price the good; the older tier mostly does not.
+
+Haiku votes yes in all 600 of its cells: every price, every scenario, up to
+$3,000 a year for five years on a $75,000 income (4% of income). This is the
+test `RESULTS.md` set for itself after R12 — "if yes-share never falls, they
+were not doing the work we assigned them" — and Haiku fails it outright. Mini
+nearly so.
+
+## Distance carries the whole response
+
+Average yes-share by spatial unit:
+
+| Model | Local watershed | Non-local |
+|---|---|---|
+| Haiku 4.5 | 1.00 | 1.00 |
+| GPT-4o mini | 1.00 | 0.94 |
+| Sonnet 4.5 | 1.00 | 0.48 |
+| GPT-4o | 0.95 | 0.47 |
+| gpt-5.6-terra | 0.72 | 0.44 |
+| Sonnet 5 | 0.62 | 0.36 |
+
+Every model except terra says yes to *every* local price on the ladder. The
+non-local cells cross 50% between $500 and $1,500. So the price sensitivity
+visible in the pooled curve is almost entirely the non-local cells; local
+willingness to pay is above the top of this ladder for four of five models.
+Same direction as R13's open-ended distance decay, now in vote space.
+
+## Sonnet 5 passes all three coherence checks
+
+It is the only model whose every cell turns over inside the ladder. Bid at
+which yes-share first falls below 0.5:
+
+| Change | Local | Non-local |
+|---|---|---|
+| Minimum Level 2 | $2,000 | $750 |
+| One-level improvement | $1,500 | $500 |
+| Minimum Level 3 | $1,000 | $500 |
+
+- **Scope ordering** (min2 > one-level > min3) holds in the local column and
+  holds weakly in the non-local column. In R13's open-ended arm this ordering
+  failed in most columns for every model.
+- **Nested dominance** (min2 at least min3) holds in both columns.
+- **Distance decay** holds for all three change types: local crosses at a
+  higher price than non-local every time.
+
+terra shows the same pattern more roughly (min2 local never crosses; the rest
+cross between $500 and $1,500). Sonnet 5's crossings are still about three to
+five times the human means in Table 2, but they are the closest of any model
+so far, and the first to reproduce the human *ordering* rather than only the
+distance effect.
+
+## A coherence test the open-ended arm cannot run
+
+A vote curve must weakly decrease in price. Counting adjacent-bid increases
+within a cell:
+
+| Model | Increases | Largest |
+|---|---|---|
+| Haiku 4.5 | 0 | — |
+| Sonnet 4.5 | 4 | min2 non-local, $750 -> $1,000: 0.30 -> 0.60 |
+| GPT-4o | 2 | one-level local, $2,000 -> $2,500: 0.80 -> 1.00 |
+| GPT-4o mini | 2 | min3 non-local, $1,000 -> $1,500: 0.80 -> 1.00 |
+| gpt-5.6-terra | 2 | min2 local, $1,500 -> $2,000: 0.90 -> 1.00 |
+| Sonnet 5 | 1 | min2 local, $2,000 -> $2,500: 0.10 -> 0.20 |
+
+With ten draws per cell and bid the standard error is about 0.15, so the
+0.10–0.20 increases are noise. Sonnet 4.5's 0.30 jump is about two standard
+errors and appears in more than one cell; it is the one worth a closer look.
+Haiku's zero violations are not a pass — a flat line at 1.00 cannot violate
+monotonicity.
+
+## Comparability with R12 and R13
+
+The $75,000 household matches the average income of the survey's human sample,
+so this arm is *better* aligned with Table 2 than R12 and R13 were. The cost is
+that it cannot be compared numerically with those earlier rounds.
+
+The direction still carries across rounds, on one assumption: water quality is
+a normal good, so a household with *less* income should not be willing to pay
+*more*. Under that assumption the central finding holds a fortiori — models
+voting yes at $3,000 on $75,000 would also do so at $100,000. Note that R12
+Sonnet reasoned explicitly in shares of income (~1%), which under this change
+would scale its figures down rather than leave them flat.
+
+**Housekeeping:** make income a task argument rather than an edit to
+`instrument.yaml`, so R12 and R13 still reproduce from a clean checkout and
+each income is recorded as its own condition. Cite the sample-income figure
+(SI Table S6) in the write-up.
+
+## Two run notes
+
+- **Temperature is split by model generation.** Haiku, Sonnet 4.5, GPT-4o and
+  mini ran at an explicit T=1.0. Sonnet 5 and gpt-5.6-terra reject the
+  parameter and ran at provider default.
+- **terra returned a bare alias** (`gpt-5.6-terra`), not a dated snapshot like
+  `claude-sonnet-4-5-20250929`. If the alias moves, this run is not
+  reproducible.
+
+## Next
+
+The local cells never turn over, so implied local willingness to pay is above
+$3,000 — roughly ten times the human means in Table 2. Extending the ladder for
+local cells only ($5k / $10k / $20k) would find the crossing point and is
+cheap. Freeze a prediction first.
+
+---
+
 # R13 — advisor vs household persona — 14 September 2026
 
 Same nine cells, same four models, ten draws, temperature 1. Two arms under
