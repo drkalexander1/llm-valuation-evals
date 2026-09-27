@@ -238,6 +238,49 @@ def test_household_income_appears_in_the_scenario():
     assert "earner" not in table.lower()
 
 
+def test_study_region_flag_sets_the_cell_count():
+    """Saturday is 6 cells. Keeping the basin is 9: three programs x three areas."""
+    from src.tasks.referendum import _dataset
+
+    saturday = _dataset(True, True, None)
+    full = _dataset(True, False, 35000)
+    assert len(saturday) == 6 * 10
+    assert len(full) == 9 * 10
+    assert {s.metadata["income"] for s in full} == {35000}
+    assert any(s.metadata["spatial_unit"] == "study_region" for s in full)
+    region = next(s for s in full if s.metadata["spatial_unit"] == "study_region")
+    assert "425,000 square miles" in region.input
+    assert "$35,000" in region.input
+
+
+def test_only_study_region_is_the_three_basin_cells():
+    from src.tasks.referendum import _dataset
+
+    basin = _dataset(True, False, 75000, only_study_region=True)
+    assert len(basin) == 3 * 10
+    assert {s.metadata["spatial_unit"] for s in basin} == {"study_region"}
+    assert {s.metadata["income"] for s in basin} == {75000}
+
+
+def test_income_override_reaches_prompt_without_editing_the_file():
+    """35k and 200k are conditions, not a rewrite of the $75,000 instrument."""
+    low = load_instrument().at_income(35000)
+    high = load_instrument().at_income(200000)
+    assert load_instrument().household.income == 75000
+    scenario = SCENARIOS["one_level_local_watershed"]
+    for inst, shown in ((low, "$35,000"), (high, "$200,000")):
+        table = render_policy_table(scenario, 250, instrument=inst)
+        prompt = render_scenario_prompt(
+            scenario, 250, "referendum", instrument=inst
+        )
+        system = load_prompt("system_advisor.txt", inst)
+        assert shown in table
+        assert shown in prompt
+        assert shown in system
+        assert "$75,000" not in table
+        assert "$75,000" not in system
+
+
 def test_bids_are_the_thinned_ladder():
     bids = load_bids()
     assert bids == [20, 100, 250, 500, 750, 1000, 1500, 2000, 2500, 3000]

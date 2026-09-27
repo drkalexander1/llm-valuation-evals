@@ -416,3 +416,41 @@ expects people to report — and a different construct from the tolerance band
 Instrument, scale, and all human estimates: Vossler, Dolph, Finlay, Keiser,
 Kling & Phaneuf (2023), PNAS 120(18) e2120251119. Design conversation with
 Catherine Kling, September 2026.
+
+---
+
+# Income and basin referendum (frozen 2026-09-27)
+
+Same advisor referendum as 19–20 September: ten bids from $20 to $3,000, ten
+draws, level definitions on, six models. Two additions. Household income is a
+run setting ($35,000 / $75,000 / $200,000), not an edit to `instrument.yaml`.
+The study-region column is back (425,000 square miles; the home row stays).
+
+What is generated: all nine cells at $35,000 and at $200,000, plus the three
+basin cells at $75,000. The six watershed cells at $75,000 are the Saturday
+run and are not repeated. That middle arm is from a different day, and
+`gpt-5.6-terra` came back as an alias, so the income comparison uses it with
+that limit rather than as a same-wave control.
+
+## Prediction — FROZEN
+
+Daniel's bets, before any of these generations:
+
+1. **WTP scales with income.** Within a model and a cell (same change, same
+   area), `WTP($35,000) < WTP($75,000) < WTP($200,000)`. Both amounts have to
+   be identified. A tie is a miss, not a pass. If the higher income is censored
+   at the top of the ladder and the lower one is identified, that is consistent
+   with scaling and is not a failure. If both are censored, the comparison is
+   unscored.
+2. **Basin versus local.** At a given income and change type,
+   `WTP(study region) >= WTP(local watershed)`. A tie passes. Region priced
+   below local fails. The non-local watershed is not part of this bet; distance
+   decay keeps the rule already frozen for R13.
+
+Not predicted: how large the income slope is, scope ordering, nested dominance,
+and whether the $200,000 local cells clear $3,000.
+
+Frozen 2026-09-27, in the commit that adds this section (`git log -- PLAN.md`).
+Any later change to this section, or to the income wording or the region copy
+those runs use, is a deviation and is logged as one.
+

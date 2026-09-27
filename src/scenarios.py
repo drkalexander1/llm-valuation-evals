@@ -11,7 +11,7 @@ data/instrument.yaml. Averages on the table are computed, never stored.
 from __future__ import annotations
 
 from src.inspect_util import load_prompt
-from src.schema import Scenario, load_instrument
+from src.schema import Instrument, Scenario, load_instrument
 
 FRAMES = ("advisor", "persona")
 SYSTEM_PROMPTS = {
@@ -31,8 +31,10 @@ def _row(label: str, current: str, proposed: str) -> str:
     return f"{label:<{_LABEL_W}}| {current:<{_COL_W}} | {proposed}"
 
 
-def render_policy_table(scenario: Scenario, bid: int) -> str:
-    inst = load_instrument()
+def render_policy_table(
+    scenario: Scenario, bid: int, instrument: Instrument | None = None
+) -> str:
+    inst = instrument or load_instrument()
     labels = inst.levels
     lines = [
         "Policy Summary",
@@ -86,6 +88,7 @@ def render_scenario_prompt(
     *,
     with_levels: bool = True,
     frame: str = "advisor",
+    instrument: Instrument | None = None,
 ) -> str:
     """Assemble preamble + policy table + the elicitation question.
 
@@ -105,13 +108,16 @@ def render_scenario_prompt(
     parts: list[str] = []
     if with_levels:
         parts.append(render_levels_block())
-    parts.append(load_prompt("scenario_preamble.txt").strip())
-    parts.append(render_policy_table(scenario, bid if bid is not None else 0))
+    inst = instrument or load_instrument()
+    parts.append(load_prompt("scenario_preamble.txt", inst).strip())
+    parts.append(
+        render_policy_table(scenario, bid if bid is not None else 0, instrument=inst)
+    )
 
     if fmt == "referendum":
         if bid is None:
             raise ValueError("referendum format requires a bid")
-        question = load_prompt("referendum.txt")
+        question = load_prompt("referendum.txt", inst)
     elif fmt == "open_ended":
         # The tax row is meaningless without a bid; drop the table's cost line.
         parts[-1] = "\n".join(
@@ -119,14 +125,14 @@ def render_scenario_prompt(
             for ln in parts[-1].splitlines()
             if not ln.startswith(("Increase in taxes", "(per year"))
         )
-        question = load_prompt(_OPEN_ENDED_PROMPTS[frame])
+        question = load_prompt(_OPEN_ENDED_PROMPTS[frame], inst)
     elif fmt == "interval":
         parts[-1] = "\n".join(
             ln
             for ln in parts[-1].splitlines()
             if not ln.startswith(("Increase in taxes", "(per year"))
         )
-        question = load_prompt("interval.txt")
+        question = load_prompt("interval.txt", inst)
     else:
         raise ValueError(f"unknown format {fmt!r}")
 

@@ -9,7 +9,7 @@ is an assumption, not a solved problem -- see PLAN.md.
 from __future__ import annotations
 
 from src import PROMPTS_DIR
-from src.schema import fill_instrument_placeholders
+from src.schema import Instrument, fill_instrument_placeholders
 
 # Newer Anthropic / OpenAI reasoning models reject an explicit temperature param.
 # Confirmed rejecting: claude-sonnet-5, gpt-5.x (incl. 5.6 Sol/Terra/Luna), o3, o4.
@@ -26,6 +26,6 @@ def temp_for(model_name: str, *, default: float = 1.0) -> float | None:
     return None if bare.startswith(_OPENAI_NO_TEMPERATURE_PREFIXES) else default
 
 
-def load_prompt(name: str) -> str:
+def load_prompt(name: str, instrument: Instrument | None = None) -> str:
     text = (PROMPTS_DIR / name).read_text(encoding="utf-8")
-    return fill_instrument_placeholders(text)
+    return fill_instrument_placeholders(text, instrument)

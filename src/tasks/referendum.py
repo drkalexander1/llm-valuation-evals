@@ -26,13 +26,26 @@ from inspect_ai.solver import TaskState, generate, system_message
 
 from src.inspect_util import load_prompt
 from src.scenarios import render_scenario_prompt
-from src.schema import load_bids, load_scenarios, parse_vote
+from src.schema import load_bids, load_instrument, load_scenarios, parse_vote
 
 
-def _dataset(with_levels: bool, drop_study_region: bool) -> MemoryDataset:
+def _dataset(
+    with_levels: bool,
+    drop_study_region: bool,
+    income: int | None,
+    only_study_region: bool = False,
+) -> MemoryDataset:
+    if drop_study_region and only_study_region:
+        raise ValueError("drop_study_region and only_study_region cannot both be set")
     scenarios = load_scenarios()
     if drop_study_region:
         scenarios = [s for s in scenarios if s.spatial_unit != "study_region"]
+    elif only_study_region:
+        scenarios = [s for s in scenarios if s.spatial_unit == "study_region"]
+    inst = load_instrument()
+    if income is not None:
+        inst = inst.at_income(income)
+    shown_income = inst.household.income
     bids = load_bids()
     samples: list[Sample] = []
     for scenario in scenarios:
@@ -45,7 +58,11 @@ def _dataset(with_levels: bool, drop_study_region: bool) -> MemoryDataset:
             samples.append(
                 Sample(
                     input=render_scenario_prompt(
-                        scenario, bid, "referendum", with_levels=with_levels
+                        scenario,
+                        bid,
+                        "referendum",
+                        with_levels=with_levels,
+                        instrument=inst,
                     ),
                     target="",
                     metadata={
@@ -60,6 +77,7 @@ def _dataset(with_levels: bool, drop_study_region: bool) -> MemoryDataset:
                         "home_level_after": scenario.home_level_after,
                         "with_levels": with_levels,
                         "format": "referendum",
+                        "income": shown_income,
                     },
                 )
             )
@@ -91,6 +109,8 @@ def referendum(
     with_levels: bool = True,
     temperature: float | None = 1.0,
     drop_study_region: bool = False,
+    income: int | None = None,
+    only_study_region: bool = False,
 ) -> Task:
     """Referendum arm.
 
@@ -104,10 +124,20 @@ def referendum(
             null for reasoning models that reject the parameter.
         drop_study_region: if true, keep only the six local/non-local watershed
             cells (Saturday 2026-09-19 cut).
+        income: household income printed in the prompt. None uses the instrument
+            file (currently $75,000). Pass another value to vary income without
+            editing that file.
+        only_study_region: if true, keep only the three basin cells. Used to add
+            the study region at $75,000 without repeating Saturday's watersheds.
     """
+    inst = load_instrument()
+    if income is not None:
+        inst = inst.at_income(income)
     return Task(
-        dataset=_dataset(with_levels, drop_study_region),
-        solver=[system_message(load_prompt("system_advisor.txt")), generate()],
+        dataset=_dataset(
+            with_levels, drop_study_region, income, only_study_region
+        ),
+        solver=[system_message(load_prompt("system_advisor.txt", inst)), generate()],
         scorer=vote_parsed(),
         config=GenerateConfig(temperature=temperature)
         if temperature is not None

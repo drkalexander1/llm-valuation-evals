@@ -144,6 +144,16 @@ class Instrument(BaseModel):
                 raise ValueError(f"{name}: apply targets unknown levels {unknown}")
         return self
 
+    def at_income(self, income: int) -> "Instrument":
+        """Copy with a different household income. The yaml value stays put."""
+        if income <= 0:
+            raise ValueError(f"income must be positive, got {income}")
+        if income == self.household.income:
+            return self
+        return self.model_copy(
+            update={"household": self.household.model_copy(update={"income": income})}
+        )
+
     def fill(self, text: str) -> str:
         """Substitute instrument fields into prompt templates."""
         income = f"${self.household.income:,}"
