@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Willingness to pay by income</title>
+<style>
+  @page { size: letter; margin: 0.55in; }
+  body {
+    font-family: "Segoe UI", Calibri, sans-serif;
+    color: #1a1a1a;
+    margin: 0;
+    font-size: 11px;
+  }
+  h1 { font-size: 18px; font-weight: 650; margin: 0 0 6px; }
+  h2 { font-size: 13px; font-weight: 650; margin: 12px 0 4px; }
+  p { margin: 0 0 4px; line-height: 1.35; }
+  .note { color: #444; }
+  .fine { color: #555; font-size: 10px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 2px;
+  }
+  th, td {
+    border-bottom: 1px solid #ddd;
+    padding: 2px 6px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  th {
+    font-weight: 650;
+    border-bottom: 1.5px solid #222;
+    font-size: 10px;
+  }
+  td:first-child, th:first-child { text-align: left; width: 34%; }
+  tr:nth-child(even) td { background: #f6f6f6; }
+  section { page-break-inside: avoid; }
+</style>
+</head>
+<body>
+  <h1>Willingness to pay by income</h1>
+  <p class="note">Each cell is 10 yes/no draws at each of 10 posted bids, from $20 to $3,000. The model never names a dollar. The number is recovered from those votes.</p>
+  <p class="note">Yes-share at a bid is the count of Yes votes divided by the number of parsed votes. Those ten shares are fit to P(yes) = 1 / (1 + exp(-(a + b x bid))). When the fitted slope b is negative, the reported willingness to pay is the price where that curve equals one half: -a / b. That price does not have to be one of the ten bids. If the shares are still mostly yes at $3,000 but drifting down, -a / b lands a few hundred dollars past the ladder. $3,108 and $3,295 are that kind of figure.</p>
+  <p class="note">"Above $3,000" means the fit produced no median. Every parsed vote was yes, or the fitted slope was not negative, and the yes-share at $3,000 was still above one half. The estimate is then left censored at the top of the ladder. If a fit fails while the share at $3,000 is already at or below one half, the cell instead uses the Turnbull mean, the area under the yes-share curve from a price of zero to $3,000. That mean cannot exceed $3,000.</p>
+  <p class="fine">$75,000 watershed figures are the Saturday run. The basin column at $75,000 finished 28 September 2026. On the frozen rule (first bid where yes-share falls below half), the basin is at least the local watershed for Sonnet 5 and for Terra where both are identified. GPT-4o one-level fails: local stays above $3,000 and the basin crosses at $3,000. Sonnet 4.5, GPT-4o mini, and Haiku stay above the ladder in both columns, so those cells are unscored. Source: logs/income/35000, logs/income/200000, logs/income/75000, and logs/referendum. Advisor frame. Dollar figures are the logit median from src/wtp.py.</p>
+
+  <section>
+    <h2>Sonnet 5</h2>
+    <table>
+      <thead><tr><th>Cell</th><th>$35,000</th><th>$75,000</th><th>$200,000</th></tr></thead>
+      <tbody>
+        <tr><td>One-level, local</td><td>$450</td><td>$1,145</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 2, local</td><td>$638</td><td>$1,808</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 3, local</td><td>$450</td><td>$1,212</td><td>above $3,000</td></tr>
+        <tr><td>One-level, non-local</td><td>$94</td><td>$460</td><td>$1,502</td></tr>
+        <tr><td>Minimum Level 2, non-local</td><td>$161</td><td>$651</td><td>$2,168</td></tr>
+        <tr><td>Minimum Level 3, non-local</td><td>$118</td><td>$484</td><td>$1,547</td></tr>
+        <tr><td>One-level, basin</td><td>$455</td><td>$1,457</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 2, basin</td><td>$597</td><td>$1,753</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 3, basin</td><td>$475</td><td>$1,100</td><td>above $3,000</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Sonnet 4.5</h2>
+    <table>
+      <thead><tr><th>Cell</th><th>$35,000</th><th>$75,000</th><th>$200,000</th></tr></thead>
+      <tbody>
+        <tr><td>One-level, local</td><td>$1,555</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 2, local</td><td>$1,808</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 3, local</td><td>$1,614</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>One-level, non-local</td><td>$197</td><td>$670</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 2, non-local</td><td>$143</td><td>$1,271</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 3, non-local</td><td>$148</td><td>$941</td><td>above $3,000</td></tr>
+        <tr><td>One-level, basin</td><td>$1,301</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 2, basin</td><td>$1,498</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 3, basin</td><td>$911</td><td>$3,083</td><td>above $3,000</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>GPT-5.6 Terra</h2>
+    <table>
+      <thead><tr><th>Cell</th><th>$35,000</th><th>$75,000</th><th>$200,000</th></tr></thead>
+      <tbody>
+        <tr><td>One-level, local</td><td>$455</td><td>$1,618</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 2, local</td><td>$730</td><td>$3,108</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 3, local</td><td>$351</td><td>$1,175</td><td>above $3,000</td></tr>
+        <tr><td>One-level, non-local</td><td>$235</td><td>$917</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 2, non-local</td><td>$295</td><td>$797</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 3, non-local</td><td>$152</td><td>$539</td><td>$2,633</td></tr>
+        <tr><td>One-level, basin</td><td>$479</td><td>$2,063</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 2, basin</td><td>$882</td><td>$3,108</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 3, basin</td><td>$406</td><td>$1,743</td><td>above $3,000</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>GPT-4o</h2>
+    <table>
+      <thead><tr><th>Cell</th><th>$35,000</th><th>$75,000</th><th>$200,000</th></tr></thead>
+      <tbody>
+        <tr><td>One-level, local</td><td>$478</td><td>$3,108</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 2, local</td><td>$1,116</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 3, local</td><td>$730</td><td>$2,922</td><td>above $3,000</td></tr>
+        <tr><td>One-level, non-local</td><td>$148</td><td>$928</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 2, non-local</td><td>$124</td><td>$949</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 3, non-local</td><td>$108</td><td>$614</td><td>above $3,000</td></tr>
+        <tr><td>One-level, basin</td><td>$555</td><td>$2,523</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 2, basin</td><td>$1,007</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 3, basin</td><td>$655</td><td>$2,651</td><td>above $3,000</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>GPT-4o mini</h2>
+    <table>
+      <thead><tr><th>Cell</th><th>$35,000</th><th>$75,000</th><th>$200,000</th></tr></thead>
+      <tbody>
+        <tr><td>One-level, local</td><td>$2,671</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 2, local</td><td>above $3,000</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 3, local</td><td>$2,315</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>One-level, non-local</td><td>$906</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 2, non-local</td><td>$1,011</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 3, non-local</td><td>$638</td><td>$3,295</td><td>above $3,000</td></tr>
+        <tr><td>One-level, basin</td><td>above $3,000</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 2, basin</td><td>above $3,000</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 3, basin</td><td>$2,665</td><td>above $3,000</td><td>above $3,000</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Haiku 4.5</h2>
+    <table>
+      <thead><tr><th>Cell</th><th>$35,000</th><th>$75,000</th><th>$200,000</th></tr></thead>
+      <tbody>
+        <tr><td>One-level, local</td><td>above $3,000</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 2, local</td><td>above $3,000</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 3, local</td><td>above $3,000</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>One-level, non-local</td><td>$2,455</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 2, non-local</td><td>$2,751</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 3, non-local</td><td>above $3,000</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>One-level, basin</td><td>above $3,000</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 2, basin</td><td>above $3,000</td><td>above $3,000</td><td>above $3,000</td></tr>
+        <tr><td>Minimum Level 3, basin</td><td>above $3,000</td><td>above $3,000</td><td>above $3,000</td></tr>
+      </tbody>
+    </table>
+  </section>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Yes-share by cell</title>
+<style>
+  @page { size: letter landscape; margin: 0.5in; }
+  body {
+    font-family: "Segoe UI", Calibri, sans-serif;
+    color: #1a1a1a;
+    margin: 0;
+    font-size: 11px;
+  }
+  h1 { font-size: 20px; font-weight: 650; margin: 0 0 6px; }
+  h2 { font-size: 14px; font-weight: 650; margin: 16px 0 6px; }
+  p { margin: 0 0 6px; line-height: 1.35; }
+  .note { color: #444; }
+  .fine { color: #555; font-size: 10px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 4px;
+    page-break-inside: avoid;
+  }
+  th, td {
+    border-bottom: 1px solid #ddd;
+    padding: 3px 6px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  th {
+    text-align: right;
+    font-weight: 650;
+    border-bottom: 1.5px solid #222;
+    font-size: 10px;
+  }
+  td:first-child, th:first-child { text-align: left; width: 22%; }
+  tr:nth-child(even) td { background: #f6f6f6; }
+  section { page-break-inside: avoid; }
+</style>
+</head>
+<body>
+  <h1>Yes-share by cell</h1>
+  <p class="note">Saturday referendum, 19-20 September 2026. Each cell is 10 independent draws, so a share moves in steps of 0.10. The headline table in RESULTS.md pools these six rows at each bid. Advisor frame, $75,000 household, study region dropped.</p>
+  <p class="fine">Source: logs/referendum. Terra's minimum-Level-3 non-local cell at $750 is 2 of 9 votes (one draw did not parse), shown as 0.22.</p>
+
+  <section>
+    <h2>Sonnet 5</h2>
+    <table>
+      <thead><tr><th>Cell</th><th>$20</th><th>$100</th><th>$250</th><th>$500</th><th>$750</th><th>$1,000</th><th>$1,500</th><th>$2,000</th><th>$2,500</th><th>$3,000</th></tr></thead>
+      <tbody>
+        <tr><td>One-level, local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.50</td><td>0.20</td><td>0.00</td><td>0.00</td><td>0.00</td></tr>
+        <tr><td>Minimum Level 2, local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.80</td><td>0.10</td><td>0.20</td><td>0.00</td></tr>
+        <tr><td>Minimum Level 3, local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.40</td><td>0.40</td><td>0.00</td><td>0.00</td><td>0.00</td></tr>
+        <tr><td>One-level, non-local</td><td>1.00</td><td>1.00</td><td>0.90</td><td>0.20</td><td>0.20</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td></tr>
+        <tr><td>Minimum Level 2, non-local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.80</td><td>0.30</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td></tr>
+        <tr><td>Minimum Level 3, non-local</td><td>1.00</td><td>1.00</td><td>0.90</td><td>0.30</td><td>0.20</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Sonnet 4.5</h2>
+    <table>
+      <thead><tr><th>Cell</th><th>$20</th><th>$100</th><th>$250</th><th>$500</th><th>$750</th><th>$1,000</th><th>$1,500</th><th>$2,000</th><th>$2,500</th><th>$3,000</th></tr></thead>
+      <tbody>
+        <tr><td>One-level, local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
+        <tr><td>Minimum Level 2, local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
+        <tr><td>Minimum Level 3, local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
+        <tr><td>One-level, non-local</td><td>1.00</td><td>0.70</td><td>0.60</td><td>0.50</td><td>0.50</td><td>0.50</td><td>0.10</td><td>0.00</td><td>0.00</td><td>0.00</td></tr>
+        <tr><td>Minimum Level 2, non-local</td><td>1.00</td><td>0.90</td><td>1.00</td><td>0.90</td><td>0.30</td><td>0.60</td><td>0.50</td><td>0.40</td><td>0.00</td><td>0.00</td></tr>
+        <tr><td>Minimum Level 3, non-local</td><td>1.00</td><td>1.00</td><td>0.90</td><td>0.70</td><td>0.30</td><td>0.60</td><td>0.10</td><td>0.20</td><td>0.00</td><td>0.00</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>GPT-5.6 Terra</h2>
+    <table>
+      <thead><tr><th>Cell</th><th>$20</th><th>$100</th><th>$250</th><th>$500</th><th>$750</th><th>$1,000</th><th>$1,500</th><th>$2,000</th><th>$2,500</th><th>$3,000</th></tr></thead>
+      <tbody>
+        <tr><td>One-level, local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.90</td><td>0.90</td><td>0.30</td><td>0.20</td><td>0.30</td><td>0.00</td></tr>
+        <tr><td>Minimum Level 2, local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.90</td><td>1.00</td><td>0.90</td><td>0.50</td></tr>
+        <tr><td>Minimum Level 3, local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.80</td><td>0.60</td><td>0.30</td><td>0.00</td><td>0.00</td><td>0.00</td></tr>
+        <tr><td>One-level, non-local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.80</td><td>0.70</td><td>0.20</td><td>0.10</td><td>0.10</td><td>0.00</td><td>0.00</td></tr>
+        <tr><td>Minimum Level 2, non-local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.80</td><td>0.60</td><td>0.10</td><td>0.10</td><td>0.00</td><td>0.00</td><td>0.00</td></tr>
+        <tr><td>Minimum Level 3, non-local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.30</td><td>0.22</td><td>0.10</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>GPT-4o</h2>
+    <table>
+      <thead><tr><th>Cell</th><th>$20</th><th>$100</th><th>$250</th><th>$500</th><th>$750</th><th>$1,000</th><th>$1,500</th><th>$2,000</th><th>$2,500</th><th>$3,000</th></tr></thead>
+      <tbody>
+        <tr><td>One-level, local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.80</td><td>1.00</td><td>0.50</td></tr>
+        <tr><td>Minimum Level 2, local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
+        <tr><td>Minimum Level 3, local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.80</td><td>0.90</td><td>0.40</td></tr>
+        <tr><td>One-level, non-local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.80</td><td>0.70</td><td>0.40</td><td>0.10</td><td>0.00</td><td>0.00</td><td>0.00</td></tr>
+        <tr><td>Minimum Level 2, non-local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.90</td><td>0.20</td><td>0.10</td><td>0.00</td><td>0.00</td><td>0.00</td></tr>
+        <tr><td>Minimum Level 3, non-local</td><td>1.00</td><td>1.00</td><td>0.80</td><td>0.60</td><td>0.50</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>GPT-4o mini</h2>
+    <table>
+      <thead><tr><th>Cell</th><th>$20</th><th>$100</th><th>$250</th><th>$500</th><th>$750</th><th>$1,000</th><th>$1,500</th><th>$2,000</th><th>$2,500</th><th>$3,000</th></tr></thead>
+      <tbody>
+        <tr><td>One-level, local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
+        <tr><td>Minimum Level 2, local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
+        <tr><td>Minimum Level 3, local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
+        <tr><td>One-level, non-local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.90</td></tr>
+        <tr><td>Minimum Level 2, non-local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.80</td><td>0.70</td><td>0.80</td></tr>
+        <tr><td>Minimum Level 3, non-local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.80</td><td>1.00</td><td>0.90</td><td>0.90</td><td>0.50</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Haiku 4.5</h2>
+    <table>
+      <thead><tr><th>Cell</th><th>$20</th><th>$100</th><th>$250</th><th>$500</th><th>$750</th><th>$1,000</th><th>$1,500</th><th>$2,000</th><th>$2,500</th><th>$3,000</th></tr></thead>
+      <tbody>
+        <tr><td>One-level, local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
+        <tr><td>Minimum Level 2, local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
+        <tr><td>Minimum Level 3, local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
+        <tr><td>One-level, non-local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
+        <tr><td>Minimum Level 2, non-local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
+        <tr><td>Minimum Level 3, non-local</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
+      </tbody>
+    </table>
+  </section>
+</body>
+</html>
