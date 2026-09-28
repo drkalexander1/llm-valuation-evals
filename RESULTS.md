@@ -1,3 +1,200 @@
+# Income and basin — 27–28 September 2026
+
+Same advisor referendum, same ten bids ($20 to $3,000), same ten draws, level
+definitions on, six models. Two additions, both frozen in `PLAN.md` before any
+of these generations. Household income is a run setting. The study-region
+column is back: 425,000 square miles, home row kept.
+
+What ran: all nine cells at $35,000 and at $200,000 (5,400 generations each),
+plus the three basin cells at $75,000 (1,800). The six watershed cells at
+$75,000 are the Saturday run and were not repeated. That middle column is a
+different day, and `gpt-5.6-terra` is still a bare alias. Parse rate on the
+finished logs is 1.00. Logs: `logs/income/35000`, `logs/income/200000`,
+`logs/income/75000`. The Saturday watersheds remain in `logs/referendum`.
+
+**WTP is the first posted bid at which yes-share falls below 0.5.** A cell is
+censored, written "above $3,000", when yes-share is still 0.5 or higher at
+every bid. The dollar figures in
+[`results/income-basin-wtp.pdf`](results/income-basin-wtp.pdf) are a different
+summary, the logit median. That fit can land between two bids, or a few
+hundred dollars past $3,000. The calls below use the crossing rule that was
+frozen, not the logit.
+
+Shareable tables, ahead of this writeup:
+[`results/income-basin-wtp.pdf`](results/income-basin-wtp.pdf),
+[`results/referendum-yes-share.pdf`](results/referendum-yes-share.pdf).
+
+## Prediction
+
+1. **Income.** Within a model and a cell, `WTP($35,000) < WTP($75,000) < WTP($200,000)` when both amounts are identified. A tie is a miss. If the higher income is censored and the lower one is identified, that is consistent with scaling. If both are censored, the comparison is unscored.
+2. **Basin versus local.** At a given income and change, `WTP(study region) >= WTP(local watershed)`. A tie passes. Region priced below local fails. Non-local is not part of this bet.
+
+## Income scales where it can be scored
+
+No cell reverses. Wherever both incomes fall inside the ladder, the higher
+income crosses at a higher bid. Wherever only the higher income is above
+$3,000, the rule counts that as consistent with scaling.
+
+The $200,000 column is above the ladder in most cells, so the top step is
+often a floor. Sonnet 5's three non-local cells are the cleanest measured
+slope: they rise from $35,000 through $75,000 and are still inside the ladder
+at $200,000 ($2,000 for all three changes). Haiku barely moves onto the
+ladder at all.
+
+First bid where yes-share falls below 0.5. "Above $3,000" means it does not.
+The $75,000 local and non-local cells are Saturday's.
+
+**Sonnet 5**
+
+| Cell | $35,000 | $75,000 | $200,000 |
+|---|---|---|---|
+| One-level, local | $500 | $1,500 | above $3,000 |
+| Minimum Level 2, local | $750 | $2,000 | above $3,000 |
+| Minimum Level 3, local | $500 | $1,000 | above $3,000 |
+| One-level, non-local | $100 | $500 | $2,000 |
+| Minimum Level 2, non-local | $250 | $750 | $2,000 |
+| Minimum Level 3, non-local | $250 | $500 | $2,000 |
+| One-level, basin | $500 | $1,500 | above $3,000 |
+| Minimum Level 2, basin | $750 | $2,000 | above $3,000 |
+| Minimum Level 3, basin | $500 | $1,500 | above $3,000 |
+
+All nine cells rise from $35,000 to $75,000. The six local and basin cells
+are then censored at $200,000. The three non-local cells are identified at
+every income and keep rising.
+
+**Sonnet 4.5**
+
+| Cell | $35,000 | $75,000 | $200,000 |
+|---|---|---|---|
+| One-level, local | $1,500 | above $3,000 | above $3,000 |
+| Minimum Level 2, local | $2,000 | above $3,000 | above $3,000 |
+| Minimum Level 3, local | $1,500 | above $3,000 | above $3,000 |
+| One-level, non-local | $100 | $1,500 | above $3,000 |
+| Minimum Level 2, non-local | $250 | $750 | above $3,000 |
+| Minimum Level 3, non-local | $100 | $750 | above $3,000 |
+| One-level, basin | $1,500 | above $3,000 | above $3,000 |
+| Minimum Level 2, basin | $1,500 | above $3,000 | above $3,000 |
+| Minimum Level 3, basin | $1,000 | above $3,000 | above $3,000 |
+
+$35,000 to $75,000 rises in the three non-local cells and is consistent in
+the other six (identified, then censored). $75,000 to $200,000 is unscored
+on the six cells that were already above the ladder.
+
+**gpt-5.6-terra**
+
+| Cell | $35,000 | $75,000 | $200,000 |
+|---|---|---|---|
+| One-level, local | $500 | $1,500 | above $3,000 |
+| Minimum Level 2, local | $750 | above $3,000 | above $3,000 |
+| Minimum Level 3, local | $500 | $1,500 | above $3,000 |
+| One-level, non-local | $250 | $1,000 | above $3,000 |
+| Minimum Level 2, non-local | $500 | $1,000 | above $3,000 |
+| Minimum Level 3, non-local | $250 | $500 | $2,500 |
+| One-level, basin | $500 | $2,500 | above $3,000 |
+| Minimum Level 2, basin | $750 | above $3,000 | above $3,000 |
+| Minimum Level 3, basin | $500 | $1,500 | above $3,000 |
+
+Seven cells rise from $35,000 to $75,000. Minimum Level 2 local and basin go
+from $750 to above $3,000. The only cell still identified at $200,000 is
+minimum Level 3, non-local ($2,500).
+
+**GPT-4o**
+
+| Cell | $35,000 | $75,000 | $200,000 |
+|---|---|---|---|
+| One-level, local | $750 | above $3,000 | above $3,000 |
+| Minimum Level 2, local | $1,500 | above $3,000 | above $3,000 |
+| Minimum Level 3, local | $1,000 | $3,000 | above $3,000 |
+| One-level, non-local | $250 | $1,000 | above $3,000 |
+| Minimum Level 2, non-local | $250 | $1,000 | above $3,000 |
+| Minimum Level 3, non-local | $250 | $1,000 | above $3,000 |
+| One-level, basin | $750 | $3,000 | above $3,000 |
+| Minimum Level 2, basin | $1,000 | above $3,000 | above $3,000 |
+| Minimum Level 3, basin | $750 | $3,000 | above $3,000 |
+
+Six cells rise from $35,000 to $75,000. The three local cells are identified
+at $35,000 and censored, or at the top bid, by $75,000. Every cell is above
+$3,000 at $200,000.
+
+**GPT-4o mini**
+
+| Cell | $35,000 | $75,000 | $200,000 |
+|---|---|---|---|
+| One-level, local | $3,000 | above $3,000 | above $3,000 |
+| Minimum Level 2, local | above $3,000 | above $3,000 | above $3,000 |
+| Minimum Level 3, local | $2,000 | above $3,000 | above $3,000 |
+| One-level, non-local | $1,000 | above $3,000 | above $3,000 |
+| Minimum Level 2, non-local | $750 | above $3,000 | above $3,000 |
+| Minimum Level 3, non-local | $500 | above $3,000 | above $3,000 |
+| One-level, basin | above $3,000 | above $3,000 | above $3,000 |
+| Minimum Level 2, basin | above $3,000 | above $3,000 | above $3,000 |
+| Minimum Level 3, basin | $2,500 | above $3,000 | above $3,000 |
+
+Six cells are identified at $35,000 and censored at $75,000. Three cells are
+censored at both, so those pairs are unscored. Nothing at $75,000 or
+$200,000 falls inside the ladder.
+
+**Haiku 4.5**
+
+| Cell | $35,000 | $75,000 | $200,000 |
+|---|---|---|---|
+| One-level, local | above $3,000 | above $3,000 | above $3,000 |
+| Minimum Level 2, local | above $3,000 | above $3,000 | above $3,000 |
+| Minimum Level 3, local | above $3,000 | above $3,000 | above $3,000 |
+| One-level, non-local | $2,500 | above $3,000 | above $3,000 |
+| Minimum Level 2, non-local | $3,000 | above $3,000 | above $3,000 |
+| Minimum Level 3, non-local | above $3,000 | above $3,000 | above $3,000 |
+| One-level, basin | above $3,000 | above $3,000 | above $3,000 |
+| Minimum Level 2, basin | above $3,000 | above $3,000 | above $3,000 |
+| Minimum Level 3, basin | above $3,000 | above $3,000 | above $3,000 |
+
+Two non-local cells at $35,000 are the only identified Haiku numbers. Both
+are censored at the higher incomes. The other seven cells are unscored at
+every step.
+
+## Basin versus local
+
+Humans in Table 2 were about flat from the local watershed to the full study
+region (one-level $316 versus $300). The prediction here is that the region
+is worth at least as much as the local watershed, because the home improvement
+is in both and the region adds area.
+
+Scored pairs, same change and income:
+
+- **Sonnet 5.** Six identified pairs, all pass. Five are ties. Minimum Level 3 at $75,000 is higher for the basin ($1,500 versus $1,000). All three at $200,000 are unscored.
+- **gpt-5.6-terra.** Five identified pairs, all pass. The one strict increase is one-level at $75,000 ($2,500 versus $1,500). Minimum Level 2 at $75,000 and all three at $200,000 are unscored.
+- **Sonnet 4.5.** One-level at $35,000 ties at $1,500 and passes. Two failures, both at $35,000: minimum Level 2, basin $1,500 against local $2,000; minimum Level 3, basin $1,000 against local $1,500. The $75,000 and $200,000 pairs are unscored.
+- **GPT-4o.** Three failures. At $35,000, minimum Level 2 is $1,000 against $1,500, and minimum Level 3 is $750 against $1,000. At $75,000, one-level crosses at $3,000 for the basin while local stays above $3,000. One-level at $35,000 ties at $750. Minimum Level 3 at $75,000 ties at $3,000. The rest are unscored.
+- **GPT-4o mini.** Two passes at $35,000: one-level stays above $3,000 in the basin while local crosses at $3,000, and minimum Level 3 is $2,500 against $2,000. Minimum Level 2 and every higher-income pair are unscored.
+- **Haiku 4.5.** All nine pairs unscored. Both columns stay above half through $3,000.
+
+Where a model fails, it prices the larger region below the home watershed.
+That is the scope failure this column was added to see. Sonnet 5 and terra,
+the two models that turn over inside the ladder, do not make it.
+
+## Note for Catherine
+
+Income is printed as $35,000, $75,000, and $200,000, same household otherwise.
+When a model has a crossing inside the ladder at the lower income, the higher
+income either crosses later or stays yes through $3,000. It does not cross
+sooner. At $200,000 most cells are still yes at the top bid, so the direction
+shows and the size of the slope does not. Haiku barely gets onto the ladder.
+
+Saturday was local versus non-local at the same 17,000 square miles. This run
+puts the full Upper Mississippi, Ohio, and Tennessee basins back, at 425,000
+square miles, with the home row kept. The prediction was that the region is
+worth at least as much as the local watershed. Sonnet 5 and terra do that
+wherever both sides are identified. Sonnet 4.5 prices two of the three
+programs below local at $35,000. GPT-4o does the same on two programs at
+$35,000, and on one-level at $75,000. The $75,000 local numbers in that
+comparison are Saturday's, not a same-day rerun.
+
+The PDF already in the repo reports a fitted median, which can sit a little
+above $3,000. This note uses the pre-registered rule: the first posted price
+where fewer than half the votes are yes.
+
+---
+
 # Referendum arm — 19–20 September 2026
 
 Six cells (three change types x local / non-local watershed; the study-region
@@ -45,11 +242,12 @@ Average yes-share by spatial unit:
 | gpt-5.6-terra | 0.72 | 0.44 |
 | Sonnet 5 | 0.62 | 0.36 |
 
-Every model except terra says yes to *every* local price on the ladder. The
-non-local cells cross 50% between $500 and $1,500. So the price sensitivity
-visible in the pooled curve is almost entirely the non-local cells; local
-willingness to pay is above the top of this ladder for four of five models.
-Same direction as R13's open-ended distance decay, now in vote space.
+Haiku, GPT-4o mini, and Sonnet 4.5 say yes at every local price. GPT-4o's
+local cells stay above half until the top of the ladder; minimum Level 3
+crosses at $3,000. Sonnet 5's local crossings are in the next section, and
+terra's are in the paragraph after it. For the older models, the price
+sensitivity in the pooled curve is the non-local cells. Same direction as
+R13's open-ended distance decay, now in vote space.
 
 ## Sonnet 5 passes all three coherence checks
 
@@ -108,10 +306,9 @@ voting yes at $3,000 on $75,000 would also do so at $100,000. Note that R12
 Sonnet reasoned explicitly in shares of income (~1%), which under this change
 would scale its figures down rather than leave them flat.
 
-**Housekeeping:** make income a task argument rather than an edit to
+**Housekeeping, since done:** income is a task argument rather than an edit to
 `instrument.yaml`, so R12 and R13 still reproduce from a clean checkout and
-each income is recorded as its own condition. Cite the sample-income figure
-(SI Table S6) in the write-up.
+each income is its own condition. The sample-income figure is SI Table S6.
 
 ## Two run notes
 
@@ -124,10 +321,11 @@ each income is recorded as its own condition. Cite the sample-income figure
 
 ## Next
 
-The local cells never turn over, so implied local willingness to pay is above
-$3,000 — roughly ten times the human means in Table 2. Extending the ladder for
-local cells only ($5k / $10k / $20k) would find the crossing point and is
-cheap. Freeze a prediction first.
+Haiku, mini, and Sonnet 4.5 still have no local crossing, so their local
+willingness to pay is above $3,000. Sonnet 5 and terra do cross locally. The
+follow-up that ran is the income and basin section above. A longer ladder for
+the cells that stay yes through $3,000 is still open, and still wants a
+prediction frozen first.
 
 ---
 

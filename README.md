@@ -31,22 +31,30 @@ make sense.
 
 ## Status
 
-Three rounds have run. Results for all three are in [`RESULTS.md`](RESULTS.md),
-newest first.
+Four rounds have run. Results are in [`RESULTS.md`](RESULTS.md), newest first.
+Shareable tables:
+[`results/income-basin-wtp.pdf`](results/income-basin-wtp.pdf),
+[`results/referendum-yes-share.pdf`](results/referendum-yes-share.pdf).
 
 - **R12, open-ended pilot (6 September 2026):** four models, nine scenarios,
   ten draws each. Exploratory.
 - **R13, advisor vs household persona (14 September):** the same four models,
   with the prediction frozen in git before any generations.
 - **Referendum arm (19–20 September):** six models, including Claude Sonnet 5
-  and gpt-5.6-terra, voting on ten bids from $20 to $3,000. The two newest
-  models are the only ones whose votes fall off with price, and Sonnet 5 is
-  the only one to pass scope ordering, nested dominance and distance decay.
-  Haiku 4.5 votes yes at every price. Exploratory: no prediction was frozen.
+  and gpt-5.6-terra, voting on ten bids from $20 to $3,000 at a $75,000
+  income. Local and non-local watersheds only. The two newest models are the
+  ones whose votes fall off with price, and Sonnet 5 is the only one to pass
+  scope ordering, nested dominance and distance decay in that grid. Haiku 4.5
+  votes yes at every price. Exploratory: no prediction was frozen.
+- **Income and basin (27–28 September):** the same six models at $35,000 and
+  $200,000 on all nine cells, plus the study-region column at $75,000.
+  Predictions were frozen first. Willingness to pay rises with income wherever
+  both sides can be compared. The study region is worth at least as much as
+  the local watershed for Sonnet 5 and terra; Sonnet 4.5 and GPT-4o price it
+  below local in a few cells.
 
-Next are the interval arm, a Yes/No order swap, and a longer bid ladder for
-the local cells, each with its prediction committed first. Design is in
-[`PLAN.md`](PLAN.md).
+Still open: the interval arm, a Yes/No order swap, and a longer bid ladder for
+the cells that stay yes through $3,000. Design is in [`PLAN.md`](PLAN.md).
 
 ## The question, and what it is not
 
@@ -130,8 +138,12 @@ python scripts/run_smoke.py --frame persona
 python scripts/run_r13.py
 python scripts/analyze_coherence.py logs/r13 --csv results/r13.csv
 
-# Referendum arm (ran 19–20 September)
+# Referendum arm (ran 19–20 September): six watershed cells at $75,000
 python scripts/run_referendum.py
+
+# Income and basin (27–28 September)
+python scripts/run_referendum.py --study-region --income 35000 200000
+python scripts/run_referendum.py --only-study-region --income 75000
 
 # Next — interval arm (already wired)
 inspect eval src/tasks/direct_wtp.py --model anthropic/claude-sonnet-4-5 --epochs 10 -T fmt=interval
