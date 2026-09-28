@@ -454,3 +454,8 @@ Frozen 2026-09-27, in the commit that adds this section (`git log -- PLAN.md`).
 Any later change to this section, or to the income wording or the region copy
 those runs use, is a deviation and is logged as one.
 
+**Clarification, 2026-09-27, before any generations.** WTP for a model, cell
+and income is the first bid on the ladder at which the yes-share falls below
+0.5. It is identified if that happens inside the ladder, and censored (above
+$3,000) if the yes-share is 0.5 or higher at every bid.
+
