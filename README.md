@@ -54,7 +54,10 @@ Shareable tables:
   below local in a few cells.
 
 Still open: the interval arm, a Yes/No order swap, and a longer bid ladder for
-the cells that stay yes through $3,000. Design is in [`PLAN.md`](PLAN.md).
+the cells that stay yes through $3,000. Also still local, and required before
+a public release of this design: the yes-share curve for every cell, and a
+draw-level dataset. Inspect logs and `results/*.csv` are gitignored today.
+Design is in [`PLAN.md`](PLAN.md).
 
 ## The question, and what it is not
 

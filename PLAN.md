@@ -459,3 +459,9 @@ and income is the first bid on the ladder at which the yes-share falls below
 0.5. It is identified if that happens inside the ladder, and censored (above
 $3,000) if the yes-share is 0.5 or higher at every bid.
 
+**Note, 2026-09-28, after the runs.** The design text above names only
+`gpt-5.6-terra` as an alias. `claude-sonnet-5` is undated in the same way:
+it returned that name in every run, and neither provider's model list offers
+a dated version of either. The limit on the $75,000 comparison applies to both.
+This is a correction to the description, not to the prediction or the runs.
+

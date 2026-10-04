@@ -8,7 +8,8 @@ column is back: 425,000 square miles, home row kept.
 What ran: all nine cells at $35,000 and at $200,000 (5,400 generations each),
 plus the three basin cells at $75,000 (1,800). The six watershed cells at
 $75,000 are the Saturday run and were not repeated. That middle column is a
-different day, and `gpt-5.6-terra` is still a bare alias. Parse rate on the
+different day, and `gpt-5.6-terra` and `claude-sonnet-5` are still undated
+model names (see run notes). Parse rate on the
 finished logs is 1.00. Logs: `logs/income/35000`, `logs/income/200000`,
 `logs/income/75000`. The Saturday watersheds remain in `logs/referendum`.
 
@@ -193,6 +194,27 @@ The PDF already in the repo reports a fitted median, which can sit a little
 above $3,000. This note uses the pre-registered rule: the first posted price
 where fewer than half the votes are yes.
 
+## Still local
+
+Keeping the curve and the vote file off the public repo was acceptable for
+the earlier rounds. It will not be for a release of this design.
+
+What is public now is the crossing (the first bid below half) and, for
+Saturday only, the yes-share at each bid
+([`results/referendum-yes-share.pdf`](results/referendum-yes-share.pdf)).
+The income and basin cells have no public curve. The draw-level dataset is
+only in `logs/` (gitignored), and `results/*.csv` is gitignored too, so the
+R12 and R13 worksheets named above are local as well.
+
+To publish later, two artifacts:
+
+1. **The curve.** Yes-share at each of the ten bids, for every model, cell,
+   and income, including Saturday's watersheds. One row per cell is enough
+   for the curve. The crossing is then recoverable from it.
+2. **The dataset.** One row per draw: model, income, scenario, bid, replicate,
+   and the parsed vote. That is the file a reader needs to refit the logit or
+   check a cell. The Inspect logs can stay gitignored; this table should not.
+
 ---
 
 # Referendum arm — 19–20 September 2026
@@ -315,9 +337,12 @@ each income is its own condition. The sample-income figure is SI Table S6.
 - **Temperature is split by model generation.** Haiku, Sonnet 4.5, GPT-4o and
   mini ran at an explicit T=1.0. Sonnet 5 and gpt-5.6-terra reject the
   parameter and ran at provider default.
-- **terra returned a bare alias** (`gpt-5.6-terra`), not a dated snapshot like
-  `claude-sonnet-4-5-20250929`. If the alias moves, this run is not
-  reproducible.
+- **Both current models are undated.** Sonnet 5 returned `claude-sonnet-5`
+  and terra returned `gpt-5.6-terra`, not dated snapshots like
+  `claude-sonnet-4-5-20250929`. Neither provider offers a dated version: the
+  model lists checked on 28 September show only these names. Runs are dated
+  19–20 and 27–28 September. If either name is later pointed at a different
+  model, these runs are not reproducible from the name alone.
 
 ## Next
 
