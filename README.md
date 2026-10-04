@@ -182,3 +182,17 @@ scripts/analyze_coherence.py
 The survey instrument, the six-level scale, and every human estimate are the
 work of Vossler, Dolph, Finlay, Keiser, Kling and Phaneuf. This repository only
 points a different kind of respondent at their design.
+
+## Tools used
+
+This project was built with AI coding assistants, under the authors' direction.
+
+- **Cursor** helped write the evaluation harness (`src/`) and ran the
+  experiment sessions.
+- **Claude (Anthropic), via Claude Code,** helped write analysis scripts,
+  checked reported results against the raw logs, and helped draft write-ups.
+  Commits it made carry a `Co-Authored-By: Claude` line.
+
+The authors designed the study, wrote and froze the predictions in `PLAN.md`,
+made all analytic and interpretive decisions, and are responsible for every
+result reported here. Claude models are among those evaluated.
