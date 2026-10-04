@@ -1,3 +1,7 @@
+> Working memo to coauthor Catherine Kling before the referendum design was
+> fixed (17 September 2026). Kept for the record; the design as run is in
+> [`PLAN.md`](../../PLAN.md).
+
 # Briefing: do language models have a valuation of water quality?
 
 **To:** Catherine Kling  

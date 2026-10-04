@@ -1,0 +1,451 @@
+The referendum prompt for all nine cells, as rendered for the $75,000 household.
+The 19-20 September run used the first six; the three study-region cells were
+added on 27-28 September. Other incomes change only the income line.
+Render any cell yourself with scripts/preview_prompt.py.
+Shown at a tax of $250. The other nine bids change only that dollar amount.
+Bids: $20, $100, $250, $500, $750, $1,000, $1,500, $2,000, $2,500, $3,000.
+
+SYSTEM
+------
+You are assisting a person who lives in the Upper Mississippi, Ohio, and Tennessee River Basins region of the United States.
+This is a 4-person household with an annual income of $75,000. They have been presented with a proposed water quality policy
+and have asked for your help thinking it through.
+
+Give them your best concrete judgement. They are aware that reasonable people
+value environmental improvements differently and are not asking you to decide
+their values for them -- they are asking what you think a household in their
+position should do, given the information in the proposal. A refusal to give a
+number is not useful to them.
+
+Think it through however you find useful, then finish with a single line in
+exactly the format the question specifies, beginning with "ANSWER:". That final
+line must contain nothing but the answer.
+
+========================================================================
+1. one_level_local_watershed
+========================================================================
+Surface waterbodies can be divided into six categories based on how a stream, river, or lake differs from its natural state:
+
+Level 1 - Natural State
+Level 2 - Close to Natural State
+Level 3 - Some Changes Noticeable
+Level 4 - Many Changes Noticeable
+Level 5 - Major Degradation
+Level 6 - Extreme Degradation
+
+The water quality changes described below would occur only in the highlighted
+policy region. Improvements would occur gradually, reaching the new conditions
+by about 2026, and then remain at the new levels. The tax increase would last 5
+years, and be in place from 2022 to 2026.
+
+Policy Summary
+
+Description of policy region: Your local watershed.
+Size of policy region: 17,000 square miles.
+This is a 4-person household with an annual income of $75,000.
+
+                                          | No policy              | Proposed policy
+                                          | (current conditions)   | (improved conditions)
+------------------------------------------+------------------------+------------------------
+Description of change                     | None                   | All areas within region improve by one level
+Water quality near your home              | Level 4 - Many Changes Noticeable | Level 3 - Some Changes Noticeable
+Water quality throughout region (average) | 3.54                   | 2.54
+Increase in taxes to your household       | None                   | $250
+(per year, for the next 5 years)          |                        |
+
+Advisory Referendum
+
+Should the authorities implement this proposed policy to improve water quality?
+
+  I vote "No" (against the proposed policy)
+  I vote "Yes" (for the proposed policy)
+
+Reason briefly if it helps, then end your reply with a final line in exactly
+this form:
+
+ANSWER: Yes
+
+or
+
+ANSWER: No
+
+========================================================================
+2. min2_local_watershed
+========================================================================
+Surface waterbodies can be divided into six categories based on how a stream, river, or lake differs from its natural state:
+
+Level 1 - Natural State
+Level 2 - Close to Natural State
+Level 3 - Some Changes Noticeable
+Level 4 - Many Changes Noticeable
+Level 5 - Major Degradation
+Level 6 - Extreme Degradation
+
+The water quality changes described below would occur only in the highlighted
+policy region. Improvements would occur gradually, reaching the new conditions
+by about 2026, and then remain at the new levels. The tax increase would last 5
+years, and be in place from 2022 to 2026.
+
+Policy Summary
+
+Description of policy region: Your local watershed.
+Size of policy region: 17,000 square miles.
+This is a 4-person household with an annual income of $75,000.
+
+                                          | No policy              | Proposed policy
+                                          | (current conditions)   | (improved conditions)
+------------------------------------------+------------------------+------------------------
+Description of change                     | None                   | All areas currently below Level 2 improved to Level 2
+Water quality near your home              | Level 4 - Many Changes Noticeable | Level 2 - Close to Natural State
+Water quality throughout region (average) | 3.54                   | 2.00
+Increase in taxes to your household       | None                   | $250
+(per year, for the next 5 years)          |                        |
+
+Advisory Referendum
+
+Should the authorities implement this proposed policy to improve water quality?
+
+  I vote "No" (against the proposed policy)
+  I vote "Yes" (for the proposed policy)
+
+Reason briefly if it helps, then end your reply with a final line in exactly
+this form:
+
+ANSWER: Yes
+
+or
+
+ANSWER: No
+
+========================================================================
+3. min3_local_watershed
+========================================================================
+Surface waterbodies can be divided into six categories based on how a stream, river, or lake differs from its natural state:
+
+Level 1 - Natural State
+Level 2 - Close to Natural State
+Level 3 - Some Changes Noticeable
+Level 4 - Many Changes Noticeable
+Level 5 - Major Degradation
+Level 6 - Extreme Degradation
+
+The water quality changes described below would occur only in the highlighted
+policy region. Improvements would occur gradually, reaching the new conditions
+by about 2026, and then remain at the new levels. The tax increase would last 5
+years, and be in place from 2022 to 2026.
+
+Policy Summary
+
+Description of policy region: Your local watershed.
+Size of policy region: 17,000 square miles.
+This is a 4-person household with an annual income of $75,000.
+
+                                          | No policy              | Proposed policy
+                                          | (current conditions)   | (improved conditions)
+------------------------------------------+------------------------+------------------------
+Description of change                     | None                   | All areas currently below Level 3 improved to Level 3
+Water quality near your home              | Level 4 - Many Changes Noticeable | Level 3 - Some Changes Noticeable
+Water quality throughout region (average) | 3.54                   | 2.96
+Increase in taxes to your household       | None                   | $250
+(per year, for the next 5 years)          |                        |
+
+Advisory Referendum
+
+Should the authorities implement this proposed policy to improve water quality?
+
+  I vote "No" (against the proposed policy)
+  I vote "Yes" (for the proposed policy)
+
+Reason briefly if it helps, then end your reply with a final line in exactly
+this form:
+
+ANSWER: Yes
+
+or
+
+ANSWER: No
+
+========================================================================
+4. one_level_nonlocal_watershed
+========================================================================
+Surface waterbodies can be divided into six categories based on how a stream, river, or lake differs from its natural state:
+
+Level 1 - Natural State
+Level 2 - Close to Natural State
+Level 3 - Some Changes Noticeable
+Level 4 - Many Changes Noticeable
+Level 5 - Major Degradation
+Level 6 - Extreme Degradation
+
+The water quality changes described below would occur only in the highlighted
+policy region. Improvements would occur gradually, reaching the new conditions
+by about 2026, and then remain at the new levels. The tax increase would last 5
+years, and be in place from 2022 to 2026.
+
+Policy Summary
+
+Description of policy region: A non-local watershed, which does not include your home.
+Size of policy region: 17,000 square miles.
+This is a 4-person household with an annual income of $75,000.
+
+                                          | No policy              | Proposed policy
+                                          | (current conditions)   | (improved conditions)
+------------------------------------------+------------------------+------------------------
+Description of change                     | None                   | All areas within region improve by one level
+Water quality throughout region (average) | 3.54                   | 2.54
+Increase in taxes to your household       | None                   | $250
+(per year, for the next 5 years)          |                        |
+
+Advisory Referendum
+
+Should the authorities implement this proposed policy to improve water quality?
+
+  I vote "No" (against the proposed policy)
+  I vote "Yes" (for the proposed policy)
+
+Reason briefly if it helps, then end your reply with a final line in exactly
+this form:
+
+ANSWER: Yes
+
+or
+
+ANSWER: No
+
+========================================================================
+5. min2_nonlocal_watershed
+========================================================================
+Surface waterbodies can be divided into six categories based on how a stream, river, or lake differs from its natural state:
+
+Level 1 - Natural State
+Level 2 - Close to Natural State
+Level 3 - Some Changes Noticeable
+Level 4 - Many Changes Noticeable
+Level 5 - Major Degradation
+Level 6 - Extreme Degradation
+
+The water quality changes described below would occur only in the highlighted
+policy region. Improvements would occur gradually, reaching the new conditions
+by about 2026, and then remain at the new levels. The tax increase would last 5
+years, and be in place from 2022 to 2026.
+
+Policy Summary
+
+Description of policy region: A non-local watershed, which does not include your home.
+Size of policy region: 17,000 square miles.
+This is a 4-person household with an annual income of $75,000.
+
+                                          | No policy              | Proposed policy
+                                          | (current conditions)   | (improved conditions)
+------------------------------------------+------------------------+------------------------
+Description of change                     | None                   | All areas currently below Level 2 improved to Level 2
+Water quality throughout region (average) | 3.54                   | 2.00
+Increase in taxes to your household       | None                   | $250
+(per year, for the next 5 years)          |                        |
+
+Advisory Referendum
+
+Should the authorities implement this proposed policy to improve water quality?
+
+  I vote "No" (against the proposed policy)
+  I vote "Yes" (for the proposed policy)
+
+Reason briefly if it helps, then end your reply with a final line in exactly
+this form:
+
+ANSWER: Yes
+
+or
+
+ANSWER: No
+
+========================================================================
+6. min3_nonlocal_watershed
+========================================================================
+Surface waterbodies can be divided into six categories based on how a stream, river, or lake differs from its natural state:
+
+Level 1 - Natural State
+Level 2 - Close to Natural State
+Level 3 - Some Changes Noticeable
+Level 4 - Many Changes Noticeable
+Level 5 - Major Degradation
+Level 6 - Extreme Degradation
+
+The water quality changes described below would occur only in the highlighted
+policy region. Improvements would occur gradually, reaching the new conditions
+by about 2026, and then remain at the new levels. The tax increase would last 5
+years, and be in place from 2022 to 2026.
+
+Policy Summary
+
+Description of policy region: A non-local watershed, which does not include your home.
+Size of policy region: 17,000 square miles.
+This is a 4-person household with an annual income of $75,000.
+
+                                          | No policy              | Proposed policy
+                                          | (current conditions)   | (improved conditions)
+------------------------------------------+------------------------+------------------------
+Description of change                     | None                   | All areas currently below Level 3 improved to Level 3
+Water quality throughout region (average) | 3.54                   | 2.96
+Increase in taxes to your household       | None                   | $250
+(per year, for the next 5 years)          |                        |
+
+Advisory Referendum
+
+Should the authorities implement this proposed policy to improve water quality?
+
+  I vote "No" (against the proposed policy)
+  I vote "Yes" (for the proposed policy)
+
+Reason briefly if it helps, then end your reply with a final line in exactly
+this form:
+
+ANSWER: Yes
+
+or
+
+ANSWER: No
+
+========================================================================
+7. one_level_region  [not in the Saturday run]
+========================================================================
+Surface waterbodies can be divided into six categories based on how a stream, river, or lake differs from its natural state:
+
+Level 1 - Natural State
+Level 2 - Close to Natural State
+Level 3 - Some Changes Noticeable
+Level 4 - Many Changes Noticeable
+Level 5 - Major Degradation
+Level 6 - Extreme Degradation
+
+The water quality changes described below would occur only in the highlighted
+policy region. Improvements would occur gradually, reaching the new conditions
+by about 2026, and then remain at the new levels. The tax increase would last 5
+years, and be in place from 2022 to 2026.
+
+Policy Summary
+
+Description of policy region: The full study region: the Upper Mississippi, Ohio, and Tennessee River Basins.
+Size of policy region: 425,000 square miles.
+This is a 4-person household with an annual income of $75,000.
+
+                                          | No policy              | Proposed policy
+                                          | (current conditions)   | (improved conditions)
+------------------------------------------+------------------------+------------------------
+Description of change                     | None                   | All areas within region improve by one level
+Water quality near your home              | Level 4 - Many Changes Noticeable | Level 3 - Some Changes Noticeable
+Water quality throughout region (average) | 3.54                   | 2.54
+Increase in taxes to your household       | None                   | $250
+(per year, for the next 5 years)          |                        |
+
+Advisory Referendum
+
+Should the authorities implement this proposed policy to improve water quality?
+
+  I vote "No" (against the proposed policy)
+  I vote "Yes" (for the proposed policy)
+
+Reason briefly if it helps, then end your reply with a final line in exactly
+this form:
+
+ANSWER: Yes
+
+or
+
+ANSWER: No
+
+========================================================================
+8. min2_region  [not in the Saturday run]
+========================================================================
+Surface waterbodies can be divided into six categories based on how a stream, river, or lake differs from its natural state:
+
+Level 1 - Natural State
+Level 2 - Close to Natural State
+Level 3 - Some Changes Noticeable
+Level 4 - Many Changes Noticeable
+Level 5 - Major Degradation
+Level 6 - Extreme Degradation
+
+The water quality changes described below would occur only in the highlighted
+policy region. Improvements would occur gradually, reaching the new conditions
+by about 2026, and then remain at the new levels. The tax increase would last 5
+years, and be in place from 2022 to 2026.
+
+Policy Summary
+
+Description of policy region: The full study region: the Upper Mississippi, Ohio, and Tennessee River Basins.
+Size of policy region: 425,000 square miles.
+This is a 4-person household with an annual income of $75,000.
+
+                                          | No policy              | Proposed policy
+                                          | (current conditions)   | (improved conditions)
+------------------------------------------+------------------------+------------------------
+Description of change                     | None                   | All areas currently below Level 2 improved to Level 2
+Water quality near your home              | Level 4 - Many Changes Noticeable | Level 2 - Close to Natural State
+Water quality throughout region (average) | 3.54                   | 2.00
+Increase in taxes to your household       | None                   | $250
+(per year, for the next 5 years)          |                        |
+
+Advisory Referendum
+
+Should the authorities implement this proposed policy to improve water quality?
+
+  I vote "No" (against the proposed policy)
+  I vote "Yes" (for the proposed policy)
+
+Reason briefly if it helps, then end your reply with a final line in exactly
+this form:
+
+ANSWER: Yes
+
+or
+
+ANSWER: No
+
+========================================================================
+9. min3_region  [not in the Saturday run]
+========================================================================
+Surface waterbodies can be divided into six categories based on how a stream, river, or lake differs from its natural state:
+
+Level 1 - Natural State
+Level 2 - Close to Natural State
+Level 3 - Some Changes Noticeable
+Level 4 - Many Changes Noticeable
+Level 5 - Major Degradation
+Level 6 - Extreme Degradation
+
+The water quality changes described below would occur only in the highlighted
+policy region. Improvements would occur gradually, reaching the new conditions
+by about 2026, and then remain at the new levels. The tax increase would last 5
+years, and be in place from 2022 to 2026.
+
+Policy Summary
+
+Description of policy region: The full study region: the Upper Mississippi, Ohio, and Tennessee River Basins.
+Size of policy region: 425,000 square miles.
+This is a 4-person household with an annual income of $75,000.
+
+                                          | No policy              | Proposed policy
+                                          | (current conditions)   | (improved conditions)
+------------------------------------------+------------------------+------------------------
+Description of change                     | None                   | All areas currently below Level 3 improved to Level 3
+Water quality near your home              | Level 4 - Many Changes Noticeable | Level 3 - Some Changes Noticeable
+Water quality throughout region (average) | 3.54                   | 2.96
+Increase in taxes to your household       | None                   | $250
+(per year, for the next 5 years)          |                        |
+
+Advisory Referendum
+
+Should the authorities implement this proposed policy to improve water quality?
+
+  I vote "No" (against the proposed policy)
+  I vote "Yes" (for the proposed policy)
+
+Reason briefly if it helps, then end your reply with a final line in exactly
+this form:
+
+ANSWER: Yes
+
+or
+
+ANSWER: No

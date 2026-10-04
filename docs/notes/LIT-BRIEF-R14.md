@@ -1,3 +1,6 @@
+> Working brief for a literature search on a planned next round (R14), kept for
+> the record. Not part of the results reported in the paper.
+
 # Literature brief — R14 "willingness to correct"
 
 Hand this file, unchanged, to whoever does the search (Claude, Gemini, or both)
