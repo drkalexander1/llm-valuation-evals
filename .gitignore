@@ -7,3 +7,8 @@ logs/
 results/*.json
 results/*.csv
 !results/.gitkeep
+# Public tables: the draw-level votes, the yes-share curves, and the R12/R13 worksheets.
+!results/referendum_draws.csv
+!results/referendum_yes_share.csv
+!results/coherence.csv
+!results/r13.csv
