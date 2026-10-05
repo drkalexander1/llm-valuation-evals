@@ -184,14 +184,21 @@ points a different kind of respondent at their design.
 
 ## Tools used
 
-This project was built with AI coding assistants, under the authors' direction.
+AI coding assistants drafted code and text under the authors' direction.
 
-- **Cursor** helped write the evaluation harness (`src/`) and ran the
-  experiment sessions.
-- **Claude (Anthropic), via Claude Code,** helped write analysis scripts,
-  checked reported results against the raw logs, and helped draft write-ups.
-  Commits it made carry a `Co-Authored-By: Claude` line.
+- **Cursor** (commits carry `Co-authored-by: Cursor`) helped revise the
+  evaluation harness (`src/`), the pilot and referendum runners, and some
+  analysis checks, and helped record the Saturday referendum and the income
+  and basin referendum.
+- **Claude (Anthropic), via Claude Code,** helped write the initial harness,
+  later analysis scripts, the R13 run record and its check against the raw
+  logs, and drafts of `PLAN.md`, `RESULTS.md`, and the working paper. Those
+  commits carry `Co-Authored-By: Claude Opus 5` or `Claude Opus 5.5`. The
+  assistant was Claude Opus. The Claude models under evaluation are Haiku
+  and Sonnet.
 
-The authors designed the study, wrote and froze the predictions in `PLAN.md`,
-made all analytic and interpretive decisions, and are responsible for every
-result reported here. Claude models are among those evaluated.
+The authors set the design, formulated and froze the predictions, and are
+responsible for every result reported here. The R13 prediction and the income
+and basin prediction were committed before those generations. The open-ended
+pilot prediction was left unfilled, and the Saturday referendum was recorded
+as exploratory.
