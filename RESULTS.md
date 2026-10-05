@@ -1,3 +1,10 @@
+> **About this file.** These are the round-by-round notes written as the
+> experiments ran, newest first. Where a round says its prediction was frozen,
+> it was committed to [`PLAN.md`](PLAN.md) before any generations; the commit
+> history shows when. The numbers in the
+> paper's Table A1 come from [`scripts/estimate_logit_wtp.py`](scripts/estimate_logit_wtp.py);
+> see the README for how to reproduce them.
+
 # Income and basin — 27–28 September 2026
 
 Same advisor referendum, same ten bids ($20 to $3,000), same ten draws, level
@@ -173,7 +180,7 @@ Where a model fails, it prices the larger region below the home watershed.
 That is the scope failure this column was added to see. Sonnet 5 and terra,
 the two models that turn over inside the ladder, do not make it.
 
-## Note for Catherine
+## Plain-language summary
 
 Income is printed as $35,000, $75,000, and $200,000, same household otherwise.
 When a model has a crossing inside the ladder at the lower income, the higher
@@ -194,26 +201,17 @@ The PDF already in the repo reports a fitted median, which can sit a little
 above $3,000. This note uses the pre-registered rule: the first posted price
 where fewer than half the votes are yes.
 
-## Still local
+## Data
 
-Keeping the curve and the vote file off the public repo was acceptable for
-the earlier rounds. It will not be for a release of this design.
+Both artifacts this section used to list as missing are now in the repo:
 
-What is public now is the crossing (the first bid below half) and, for
-Saturday only, the yes-share at each bid
-([`results/referendum-yes-share.pdf`](results/referendum-yes-share.pdf)).
-The income and basin cells have no public curve. The draw-level dataset is
-only in `logs/` (gitignored), and `results/*.csv` is gitignored too, so the
-R12 and R13 worksheets named above are local as well.
-
-To publish later, two artifacts:
-
-1. **The curve.** Yes-share at each of the ten bids, for every model, cell,
-   and income, including Saturday's watersheds. One row per cell is enough
-   for the curve. The crossing is then recoverable from it.
-2. **The dataset.** One row per draw: model, income, scenario, bid, replicate,
-   and the parsed vote. That is the file a reader needs to refit the logit or
-   check a cell. The Inspect logs can stay gitignored; this table should not.
+1. **The curve.** [`results/referendum_yes_share.csv`](results/referendum_yes_share.csv):
+   yes and n at each of the ten bids, for every model, cell and income,
+   including Saturday's watersheds.
+2. **The dataset.** [`results/referendum_draws.csv`](results/referendum_draws.csv):
+   one row per draw (model, income, scenario, bid, replicate, parsed vote, and
+   the log it came from). Both are exported from the Inspect logs by
+   `scripts/export_referendum_draws.py`; the logs themselves stay gitignored.
 
 ---
 
@@ -515,7 +513,7 @@ once it is allowed to write a paragraph.
   factor of ten. Freeze a resampling threshold together with the rule, not
   after the run.
 
-## Note for Catherine (R13)
+## Plain-language summary (R13)
 
 Asked the same nine cells two ways: advise a household, or *be* a member of
 that household. Same income ($100k), no extra biography. Prediction was that
@@ -647,7 +645,7 @@ the work we assigned them.
 
 ---
 
-## Note for Catherine
+## Plain-language summary
 
 Same instrument as the 2023 paper, nine Table 2 cells, asked as an open-ended
 maximum annual tax (ten draws per cell). Models advised; they were not treated
@@ -695,45 +693,3 @@ Design notes, not the point of the conversation: advisor framing rather than
 a respondent; baseline mix held fixed at Fig. S2; min3 change line is
 reconstructed; next week is the referendum on a thinned bid ladder, which is
 the check on whether these dollars were doing valuation work.
-
-
----
-
-## LinkedIn draft
-
-When you hand a language model a real stated-preference survey, the format of
-the question does as much work as the scenario.
-
-This week I ran the water-quality instrument from Vossler, Dolph, Finlay,
-Keiser, Kling & Phaneuf (PNAS 2023) on four frontier models — the same
-six-level scale, the same nine policy cells, asked as an open-ended maximum
-annual tax. Ten draws per cell. Design conversation with Catherine Kling, who
-coauthored the original study.
-
-Two things showed up that are easy to misread.
-
-First: the most capable model in the set (Claude Sonnet 4.5) looked like it
-valued every policy at $100,000. It had copied the household income line into a
-long essay and put the actual tax at the end. A smaller model (Haiku) followed
-"reply with exactly `$N`" and looked well-behaved. That was a parser taking the
-first dollar sign, not a sophistication reversal. After scoring the last `$`,
-Sonnet shows a steep local-vs-nonlocal drop, in the same direction as the human
-sample. It also does something the others don't: it names a **range**, then
-commits to a point inside it. That is closer to thinking out loud than to a
-single reservation price.
-
-Second: even with a fair parser, the open-ended amounts sit on a small set of
-round numbers. Haiku reused $240 / $280 / $850 across cells. That *might* be
-its willingness to pay. It might also be how it talks about willingness to pay.
-An open-ended question cannot tell those apart — which is a good deal of why
-the original survey used a yes/no referendum at a posted price, not "name a
-dollar."
-
-Human means from the paper sit between $95 and $492. Some model cells land on
-top of those; some sit above the survey's highest bid ($750). Next week I run
-the same nine cells as the referendum. If the vote curve ranks policies the
-same way, the lumps were doing real work. If it does not, the dollars were not.
-
-Not a silicon sample of Midwestern households. The models were asked to advise.
-The check is whether the numbers cohere — scope, distance, nested dominance —
-and whether the elicitation is even asking what we think it is.

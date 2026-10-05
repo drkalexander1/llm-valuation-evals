@@ -13,7 +13,8 @@ top bid are extrapolations and are flagged. Also reports the area under the
 yes-share curve (src/wtp.py), which is bounded by the top bid.
 
 Usage:
-    python scripts/estimate_logit_wtp.py --csv results/logit_wtp.csv
+    python scripts/estimate_logit_wtp.py --draws results/referendum_draws.csv --csv results/logit_wtp.csv
+    python scripts/estimate_logit_wtp.py --csv results/logit_wtp.csv   # from local logs
 """
 
 from __future__ import annotations
@@ -91,14 +92,31 @@ def fit_with_se(shares: dict[int, tuple[int, int]]) -> tuple[float, float, float
     return float(est), se, float(b)
 
 
+def counts_from_draws(path: Path) -> dict[str, dict[str, list[int]]]:
+    """Same shape as the cache: 'model|income|scenario' -> {bid: [yes, n]}."""
+    grouped: dict[str, tuple[list[int], list[bool | None]]] = defaultdict(lambda: ([], []))
+    with path.open(newline="") as f:
+        for row in csv.DictReader(f):
+            bids, votes = grouped[f"{row['model']}|{row['income']}|{row['scenario_id']}"]
+            bids.append(int(row["bid"]))
+            votes.append(None if row["vote"] == "" else row["vote"] == "1")
+    return {k: {str(b): list(yn) for b, yn in wtp.yes_shares(*v).items()}
+            for k, v in grouped.items()}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--csv", type=Path)
     ap.add_argument("--counts", type=Path, default=Path("results/referendum_counts.json"),
                     help="cache of yes/n per bid; rebuilt from logs if missing")
+    ap.add_argument("--draws", type=Path,
+                    help="public draw-level CSV (results/referendum_draws.csv); "
+                         "fits from it instead of the logs or the cache")
     args = ap.parse_args()
 
-    if args.counts.exists():
+    if args.draws:
+        counts = counts_from_draws(args.draws)
+    elif args.counts.exists():
         counts = json.loads(args.counts.read_text())
     else:
         grouped: dict[str, tuple[list[int], list[bool | None]]] = defaultdict(lambda: ([], []))
