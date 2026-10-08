@@ -8,8 +8,10 @@ referendum from Vossler et al. (2023, *PNAS*), using the survey's own wording,
 its own six-level quality scale and its own bid ladder. It then checks whether
 the votes behave as a valuation should. It is the code and data behind:
 
-> Daniel Kling Alexander and Catherine Kling, *Validity Without Ground Truth*,
-> working paper, EAG NYC 2026. Link to follow.
+> Daniel Robert Kling Alexander and Catherine Louise Kling (2026).
+> *Validity Without Ground Truth: What Stated-Preference Economics Offers the
+> Evaluation of Language Models.* arXiv:2610.10506.
+> [https://arxiv.org/abs/2610.10506](https://arxiv.org/abs/2610.10506)
 
 Built on [Inspect AI](https://inspect.aisi.org.uk/).
 
