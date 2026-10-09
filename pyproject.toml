@@ -1,0 +1,35 @@
+[project]
+name = "llm-valuation-evals"
+version = "0.1.0"
+description = "Puts the Vossler et al. (2023) stated-preference water-quality referendum to language models and checks whether their valuations cohere."
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "Daniel Robert Kling Alexander" },
+    { name = "Catherine Louise Kling" },
+]
+requires-python = ">=3.11"
+dependencies = [
+    "inspect_ai>=0.3.244",
+    "numpy>=2.3",
+    "pandas>=2.3",
+    "pydantic>=2.13",
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=9.1"]
+
+[project.urls]
+Repository = "https://github.com/drkalexander1/llm-valuation-evals"
+Paper = "https://arxiv.org/abs/2610.10506"
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+# The package is literally named `src`, and its data lives in data/ and prompts/
+# at the repo root (see src/__init__.py), so this is meant for an editable
+# install from a checkout: `uv sync` or `pip install -e .`.
+[tool.setuptools]
+packages = ["src", "src.tasks"]
