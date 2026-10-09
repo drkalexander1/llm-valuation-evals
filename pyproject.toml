@@ -33,3 +33,7 @@ build-backend = "setuptools.build_meta"
 # install from a checkout: `uv sync` or `pip install -e .`.
 [tool.setuptools]
 packages = ["src", "src.tasks"]
+
+[tool.pytest.ini_options]
+# tests import scripts/ as well as src/, so put the repo root on the path.
+pythonpath = ["."]
