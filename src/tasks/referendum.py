@@ -111,6 +111,7 @@ def referendum(
     drop_study_region: bool = False,
     income: int | None = None,
     only_study_region: bool = False,
+    epochs: int = 10,
 ) -> Task:
     """Referendum arm.
 
@@ -129,6 +130,8 @@ def referendum(
             editing that file.
         only_study_region: if true, keep only the three basin cells. Used to add
             the study region at $75,000 without repeating Saturday's watersheds.
+        epochs: draws per scenario and bid. Ten gives the paper's 100 votes per
+            cell. `--epochs` on the command line overrides it.
     """
     inst = load_instrument()
     if income is not None:
@@ -139,6 +142,7 @@ def referendum(
         ),
         solver=[system_message(load_prompt("system_advisor.txt", inst)), generate()],
         scorer=vote_parsed(),
+        epochs=epochs,
         config=GenerateConfig(temperature=temperature)
         if temperature is not None
         else GenerateConfig(),
